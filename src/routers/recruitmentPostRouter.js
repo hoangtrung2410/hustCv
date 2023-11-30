@@ -1,4 +1,4 @@
-const recruitmentPostController = require("../controllers/recruitmentPost.controller")
+const recruitmentPostController = require("../controllers/recruitmentPostController.js")
 
 const router = require('express').Router()
 

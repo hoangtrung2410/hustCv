@@ -22,10 +22,9 @@ module.exports = (sequelize, DataTypes) => {
         salary: {
             type: DataTypes.STRING(100),
         },
-        time: {
+        dateCreate: {
             type: DataTypes.DATE,
         },
-
 
     }, {
 

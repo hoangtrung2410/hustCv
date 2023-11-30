@@ -2,7 +2,7 @@ module.exports={
     HOST:'mysqldb.cing4ikwlyqw.ap-southeast-1.rds.amazonaws.com',
     USER:'admin',
     PASSWORD:'12345678',
-    DB:'tim_viec',
+    DB:'hustCv',
     dialect:'mysql',
     port:3306,
     pool:{

@@ -14,7 +14,7 @@ const addRecruitmentPost = async(req,res ) =>{
             request: req.body.request,
             form: req.body.form,
             salary:req.body.salary,
-            date: req.body.date,
+            dateCreate: req.body.dateCreate,
 
         }
         console.log(info)
