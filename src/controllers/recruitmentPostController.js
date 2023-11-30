@@ -2,7 +2,6 @@ const db = require('../models')
 // create main Model
 const RecruitmentPost = db.recruitmentPost
 
-
 const addRecruitmentPost = async(req,res ) =>{
     try{
         if(!res.body){
