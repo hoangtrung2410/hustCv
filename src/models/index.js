@@ -54,6 +54,7 @@ db.criterionJob = require('./criterionJob.js')(sequelize,DataTypes)
 db.user.belongsTo(db.role,{ foreignKey: 'role_id',onUpdate:'cascade',onDelete:'cascade'})
 db.user.belongsTo(db.business,{ foreignKey: 'business_id',onUpdate:'cascade',onDelete:'cascade'})
 db.user.hasOne(db.personalFile,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
+db.user.hasOne(db.criterionJob,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
 db.user.hasMany(db.recruitmentPost,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
 db.user.hasMany(db.application,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
 //business
@@ -61,7 +62,7 @@ db.business.hasMany(db.user,{ foreignKey: 'business_id',onUpdate:'cascade',onDel
 //role
 db.role.hasMany(db.user,{foreignKey: 'role_id',onUpdate:'cascade',onDelete:'cascade'})
 //recruitmentPost
-db.recruitmentPost.hasMany(db.application)
+/db.recruitmentPost.hasMany(db.application,{foreignKey:'recruitmentPost_id',onUpdate:'cascade',onDelete:'cascade'})
 db.recruitmentPost.belongsTo(db.user,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
 db.recruitmentPost.belongsToMany(db.skill,{through: 'post_skill'})
 
@@ -71,13 +72,13 @@ db.skill.belongsToMany(db.criterionJob,{through: 'skill_criterion'})
 db.skill.belongsToMany(db.personalFile,{through:'skill_profile'})
 //criterionJob
 db.criterionJob.belongsToMany(db.skill,{through: 'skill_criterion'})
+db.criterionJob.belongsTo(db.user,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
 //personalFile
 db.personalFile.belongsToMany(db.skill,{through:'skill_profile'})
-db.personalFile.belongsTo(db.user,{through:'user_id',onUpdate:'cascade',onDelete:'cascade'})
+db.personalFile.belongsTo(db.user,{foreignKey:'user_id',onUpdate:'cascade',onDelete:'cascade'})
 //application
-db.application.belongsTo(db.recruitmentPost)
-
-db.application.belongsTo(db.user,{through:'user_id',onUpdate:'cascade',onDelete:'cascade'})
+db.application.belongsTo(db.recruitmentPost,{foreignKey:'recruitmentPost_id',onUpdate:'cascade',onDelete:'cascade'})
+db.application.belongsTo(db.user,{foreignKey:'user_id',onUpdate:'cascade',onDelete:'cascade'})
 
 
 
