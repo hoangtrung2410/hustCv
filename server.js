@@ -3,7 +3,7 @@ const cors = require('cors')
 
 const app = express()
 //port
-const PORT =6868
+const PORT =8989
 // middleware
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))

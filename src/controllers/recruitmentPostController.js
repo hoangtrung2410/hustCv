@@ -2,53 +2,52 @@ const db = require('../models')
 // create main Model
 const RecruitmentPost = db.recruitmentPost
 
-const addRecruitmentPost = async(req,res ) =>{
-    try{
-        if(!res.body){
-            res.status(400).send("Bad request: Missing request body")
+const addRecruitmentPost = async (req, res) => {
+    try {
+        if (!req.body) {
+            return res.status(400).json({ error: "Bad request: Missing request body" });
         }
-        let info = {
+        const info = {
             title: req.body.title,
             describe: req.body.describe,
             request: req.body.request,
             form: req.body.form,
-            salary:req.body.salary,
+            salary: req.body.salary,
             dateCreate: req.body.dateCreate,
-
-        }
-        console.log(info)
-        const recruitmentPost = await RecruitmentPost.create(info)
-        res.status(201).send(recruitmentPost)
-    }catch(error){
-        console.log(error)
-        res.status(500).send("Internal Server Error")
-
+        };
+        console.log(info);
+        const recruitmentPost = await RecruitmentPost.create(info);
+        return res.status(201).json(recruitmentPost);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
-}
-const updateRecruitmentPost = async (req,res)=>{
-    try{
-        let id = req.params.id
-        const [recruitmentPost]  = await RecruitmentPost.update(req.body,{where: {id:id}})
-        if(recruitmentPost===0){
-            res.status(404).send("RecruitmentPost not found")
-            return
+};
+
+const updateRecruitmentPost = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const [updatedRows] = await RecruitmentPost.update(req.body, { where: { id: id } });
+
+        if (updatedRows === 0) {
+            return res.status(404).json({ error: "RecruitmentPost not found" });
         }
-        res.status(200).send(recruitmentPost)
-
-    }catch(error){
-        console.log(error)
-        res.status(500).send("Internal Server Error")
-
+        const updatedRecruitmentPost = await RecruitmentPost.findByPk(id);
+        return res.status(200).json(updatedRecruitmentPost);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
-}
+};
+
 const getAllRecruitmentPost = async (req,res)=>{
     try{
         let recruitmentPosts = await RecruitmentPost.findAll({})
-        res.status(200).send(recruitmentPosts)
+        res.status(200).json(recruitmentPosts)
     }
     catch (error){
         console.log(error)
-        res.status(500).send("Internal Server error")
+        res.status(500).json({error :"Internal Server Error"})
     }
 }
 // get one user
@@ -57,15 +56,14 @@ const getOneRecruitmentPost = async(req,res)=>{
         let id = req.params.id
         const recruitmentPost = await RecruitmentPost.findOne({where:{id:id}})
         if(!recruitmentPost){
-            res.status(404).send("User not found")
+            res.status(404).json({error:"RecruitmentPost not found"})
             return;
         }
-        res.status(200).send(recruitmentPost)
-
+        res.status(200).json(recruitmentPost)
     }
     catch (error){
         console.log(error)
-        res.status(500).send("Internal Server error")
+        res.status(500).json({error :"Internal Server Error"})
 
     }
 }
@@ -73,11 +71,11 @@ const deleteRecruitmentPost = async (req,res)=>{
     try{
         let id = req.params.id
         await RecruitmentPost.destroy({where:{id:id}})
-        res.status(200).send("RecruitmentPost deleted")
+        res.status(200).json("RecruitmentPost deleted")
     }
     catch (error){
         console.log(error)
-        res.status(500).send("Internal Server error")
+        res.status(500).json({error :"Internal Server Error"})
     }
 }
 // update user
