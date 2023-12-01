@@ -32,7 +32,7 @@ sequelize.authenticate()
 const db ={}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-db.sequelize.sync({ force: false  })
+db.sequelize.sync({ force: true  })
     .then(() => {
         console.log('yes re-sync done!')
     })
@@ -46,14 +46,40 @@ db.skill = require('./skill.js')(sequelize,DataTypes)
 db.business = require('./business.js')(sequelize,DataTypes)
 db.role = require('./role.js')(sequelize,DataTypes)
 db.personalFile = require('./personalFile.js')(sequelize,DataTypes)
+db.criterionJob = require('./criterionJob.js')(sequelize,DataTypes)
 
 
 // relation
-// use
-db.user.belongsTo(db.role,{ foreignKey: 'role_id', as: 'role',onUpdate:'cascade',onDelete:'cascade'})
-//skill
+// user
+db.user.belongsTo(db.role,{ foreignKey: 'role_id',onUpdate:'cascade',onDelete:'cascade'})
+db.user.belongsTo(db.business,{ foreignKey: 'business_id',onUpdate:'cascade',onDelete:'cascade'})
+db.user.hasOne(db.personalFile,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
+db.user.hasMany(db.recruitmentPost,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
+db.user.hasMany(db.application,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
+//business
+db.business.hasMany(db.user,{ foreignKey: 'business_id',onUpdate:'cascade',onDelete:'cascade'})
 //role
-db.role.hasMany(db.user,{foreignKey: 'role_id', as: 'role',onUpdate:'cascade',onDelete:'cascade'})
-//
+db.role.hasMany(db.user,{foreignKey: 'role_id',onUpdate:'cascade',onDelete:'cascade'})
+//recruitmentPost
+db.recruitmentPost.hasMany(db.application)
+db.recruitmentPost.belongsTo(db.user,{foreignKey: 'user_id',onUpdate:'cascade',onDelete:'cascade'})
+db.recruitmentPost.belongsToMany(db.skill,{through: 'post_skill'})
 
-module.exports = db
+//skill
+db.skill.belongsToMany(db.recruitmentPost,{through: 'post_skill'})
+db.skill.belongsToMany(db.criterionJob,{through: 'skill_criterion'})
+db.skill.belongsToMany(db.personalFile,{through:'skill_profile'})
+//criterionJob
+db.criterionJob.belongsToMany(db.skill,{through: 'skill_criterion'})
+//personalFile
+db.personalFile.belongsToMany(db.skill,{through:'skill_profile'})
+db.personalFile.belongsTo(db.user,{through:'user_id',onUpdate:'cascade',onDelete:'cascade'})
+//application
+db.application.belongsTo(db.recruitmentPost)
+
+db.application.belongsTo(db.user,{through:'user_id',onUpdate:'cascade',onDelete:'cascade'})
+
+
+
+
+module.exports =db
