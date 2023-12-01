@@ -2,7 +2,7 @@ module.exports =(sequelize,DataTypes)=>{
     const Role = sequelize.define("role",{
         id:{
             type:DataTypes.INTEGER,
-            primarykey: true,
+            primaryKey: true,
             autoIncrement:true,
         },
         name:{

@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(20),
             allowNull: false,
         },
+        phoneNumber:{
+            type: DataTypes.STRING(10),
+            allowNull: false,
+        },
+        birthDay:{
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
         status: {
             type: DataTypes.BOOLEAN,
             defaultValue: true
@@ -30,7 +38,6 @@ module.exports = (sequelize, DataTypes) => {
 
         timestamps: false
     })
-
     return User
 
 }

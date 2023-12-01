@@ -1,18 +1,19 @@
 module.exports = (sequelize,DataTypes) =>{
     const Application = sequelize.define("application",{
         id:{
-            Type : DataTypes.INTEGER,
-            primaryKey:True,
-            autoIncrement:True,
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
         },
-        cv:{
-            Type :DataTypes.STRING
-
+        CV:{
+            type :DataTypes.STRING,
         },
         status:{
-            Type : DataTypes.BOOLEAN,
-
+            type : DataTypes.STRING,
         }
 
+    },{
+
     })
+    return Application
 }
