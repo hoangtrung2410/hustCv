@@ -40,5 +40,5 @@ db.sequelize.sync({ force: false  })
 
 db.recruitmentPost = require('./recruitmentPost.js')(sequelize, DataTypes)
 db.business = require('./business.js')(sequelize, DataTypes)
-
+db.user = require('./user.js')(sequelize, DataTypes)
 module.exports = db

@@ -12,9 +12,11 @@ app.use(cors())
 
 const recruitmentPostRouter = require('./src/routers/recruitmentPostRouter.js')
 const businessRouter = require('./src/routers/businessRouter.js')
+const userRouter = require('./src/routers/userRouter.js')
 
 app.use('/api/recruitmentPosts', recruitmentPostRouter)
 app.use('/api/business', businessRouter)
+app.use('/api/users', userRouter)
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
 })
