@@ -32,7 +32,7 @@ sequelize.authenticate()
 const db ={}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-db.sequelize.sync({ force: true  })
+db.sequelize.sync({ force: false  })
     .then(() => {
         console.log('yes re-sync done!')
     })
@@ -47,6 +47,8 @@ db.business = require('./business.js')(sequelize,DataTypes)
 db.role = require('./role.js')(sequelize,DataTypes)
 db.personalFile = require('./personalFile.js')(sequelize,DataTypes)
 db.criterionJob = require('./criterionJob.js')(sequelize,DataTypes)
+db.authQuestion = require('./authQuestion.js')(sequelize,DataTypes)
+
 
 
 // relation

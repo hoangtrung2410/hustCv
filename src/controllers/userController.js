@@ -1,17 +1,34 @@
 const db = require('../models')
-
+const { Op } = require('sequelize');
 const User = db.user
 
-const addUser = async (req, res) =>{
+const signUp = async (req, res) =>{
     try{
         if(!req.body){
             return res.status(404).json({error:"Bad request: Missing request body"})
         }
-        const inf = {
+        const info = {
             username: req.body.username,
+            email:req.body.email,
             password: req.body.password,
-            email: req.body.email
+            phoneNumber:req.body.phoneNumber,
+            birthDay:req.body.birthDay,
         }
+        const checkUser = await User.findOne({
+            where: {
+                [Op.or]: [
+                    { username: info.username },
+                    { email: info.email },
+                ],
+            },
+        });
+        if(checkUser){
+            console.log("user find :",checkUser)
+            return res.status(403).json({error:"User is exist"})
+        }
+        // console.log(info);
+        const user = await User.create(info);
+        return res.status(201).json(user);
     } catch(error){
         console.log(error);
         res.status(500).json({error:"Internal Server Error"});
@@ -46,7 +63,7 @@ const getAllUser = async (req,res)=>{
     }
 }
 module.exports ={
-    addUser,
+    signUp,
     updateUser,
     getAllUser
 }
