@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("user", {
@@ -5,29 +6,35 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
-
         },
         username: {
             type: DataTypes.STRING(50),
-            required :true
+            allowNull: false
         },
-        email:{
+        email: {
             type: DataTypes.STRING(100),
             unique: true,
-            required :true,
-            lowercase :true
+            allowNull: false,
+            lowercase: true
         },
-        password:{
-            type: DataTypes.STRING(20),
-            required :true,
+        password: {
+            type: DataTypes.STRING(255),
+            set(value) {
+                const bcrypt = require('bcrypt');
+                const saltRounds = 10;
+                const hashedPassword = bcrypt.hashSync(value, saltRounds);
+                this.setDataValue('password', hashedPassword);
+            }
+
         },
-        phoneNumber:{
+
+        phoneNumber: {
             type: DataTypes.STRING(10),
-            required :true,
+            allowNull: false,
         },
-        birthDay:{
+        birthDay: {
             type: DataTypes.DATE,
-            required :true,
+            allowNull: false,
         },
         status: {
             type: DataTypes.BOOLEAN,
@@ -35,9 +42,28 @@ module.exports = (sequelize, DataTypes) => {
         }
 
     }, {
+        timestamps: false,
 
-        timestamps: false
-    })
-    return User
 
-}
+    });
+    // User.addHook("beforeSave", async (user) => {
+    //     if (user.password) {
+    //
+    //         user.password = await bcrypt.hash(user.password, 10);
+    //         console.log("password = " + user.password)
+    //     }
+    // })
+    User.prototype.checkPassword = async function (newPassword) {
+        try {
+            console.log("validPassword 1 = " + newPassword);
+            console.log("validPassword 2= " + this.password)
+            const check = await bcrypt.compare(newPassword, this.password);
+            console.log("check = " + check);
+            return check;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    return User;
+};

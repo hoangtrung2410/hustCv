@@ -62,10 +62,10 @@ class ApiError extends BaseError {
  * @param {Error} err - Error object
  * @returns {boolean} - Is this error an ApiError
  */
-export const IsApiError = (err) =>
+const IsApiError = (err) =>
     err instanceof ApiError ? err.isOperational : false;
 
-export class NotFoundError extends ApiError {
+class NotFoundError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.NOT_FOUND.message,
         type = DEFAULT_ERRORS.NOT_FOUND.code
@@ -74,7 +74,7 @@ export class NotFoundError extends ApiError {
     }
 }
 
-export class BadRequestError extends ApiError {
+class BadRequestError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.BAD_REQUEST.message,
         type = DEFAULT_ERRORS.BAD_REQUEST.code
@@ -82,7 +82,7 @@ export class BadRequestError extends ApiError {
         super(message, 400, type);
     }
 }
-export class ValidationError extends ApiError {
+class ValidationError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.VALIDATION.message,
         type = DEFAULT_ERRORS.VALIDATION.code
@@ -91,7 +91,7 @@ export class ValidationError extends ApiError {
     }
 }
 
-export class UnauthorizedError extends ApiError {
+class UnauthorizedError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.UNAUTHORIZED.message,
         type = DEFAULT_ERRORS.UNAUTHORIZED.code
@@ -99,7 +99,7 @@ export class UnauthorizedError extends ApiError {
         super(message, 401, type);
     }
 }
-export class ForbiddenError extends ApiError {
+class ForbiddenError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.FORBIDDEN.message,
         type = DEFAULT_ERRORS.FORBIDDEN.code
@@ -108,7 +108,7 @@ export class ForbiddenError extends ApiError {
     }
 }
 
-export class InternalServerError extends ApiError {
+class InternalServerError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.SERVER_ERROR.message,
         type = DEFAULT_ERRORS.SERVER_ERROR.code
@@ -117,7 +117,7 @@ export class InternalServerError extends ApiError {
     }
 }
 
-export class BadTokenError extends ApiError {
+class BadTokenError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.BAD_TOKEN.message,
         type = DEFAULT_ERRORS.BAD_TOKEN.code
@@ -126,11 +126,23 @@ export class BadTokenError extends ApiError {
     }
 }
 
-export class TokenExpiredError extends ApiError {
+class TokenExpiredError extends ApiError {
     constructor(
         message = DEFAULT_ERRORS.TOKEN_EXPIRED.message,
         type = DEFAULT_ERRORS.TOKEN_EXPIRED.code
     ) {
         super(message, 401, type);
     }
+}
+module.exports={
+    IsApiError,
+    NotFoundError,
+    BadRequestError,
+    ValidationError,
+    UnauthorizedError,
+    ForbiddenError,
+    InternalServerError,
+    BadTokenError,
+    TokenExpiredError
+
 }

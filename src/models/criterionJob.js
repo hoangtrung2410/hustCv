@@ -11,6 +11,10 @@ module.exports=(sequelize,DataTypes)=>{
         jobLevel:{
             type:DataTypes.STRING
 
+        },
+        address:{
+            type:DataTypes.STRING
+
         }
     },{
         timestamps: false,

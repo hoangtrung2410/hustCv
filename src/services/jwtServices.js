@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import moment from "moment";
+const jwt = require ("jsonwebtoken");
+const moment = require ( "moment");
 
 let jwtidCounter = 0;
 let blacklist = [];
@@ -13,10 +13,9 @@ const JwtService = {
             console.log("[JWT] Generating fastify JWT sign");
 
             const payload = JSON.parse(JSON.stringify(_payload));
-
             jwtidCounter = jwtidCounter + 1;
             return jwt.sign({ payload }, process.env.SERVER_JWT_SECRET, {
-                expiresIn: Number(process.env.SERVER_JWT_TIMEOUT),
+                expiresIn: process.env.SERVER_JWT_TIMEOUT,
                 jwtid: jwtidCounter + "",
             });
         } catch (error) {
@@ -92,4 +91,4 @@ const JwtService = {
     },
 };
 
-export default JwtService;
+module.exports = JwtService;
