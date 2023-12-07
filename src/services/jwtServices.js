@@ -15,6 +15,24 @@ const JwtService = {
             const payload = JSON.parse(JSON.stringify(_payload));
             jwtidCounter = jwtidCounter + 1;
             return jwt.sign({ payload }, process.env.SERVER_JWT_SECRET, {
+                expiresIn: 10,
+                jwtid: jwtidCounter + "",
+            });
+        } catch (error) {
+            console.log("[JWT] Error during fastify JWT sign");
+            throw error;
+        }
+    },
+    jwtSignIn: (_payload) => {
+        try {
+            if (process.env.SERVER_JWT !== "true")
+                throw new Error("[JWT] Fastify JWT flag is not setted");
+
+            console.log("[JWT] Generating fastify JWT sign");
+
+            const payload = JSON.parse(JSON.stringify(_payload));
+            jwtidCounter = jwtidCounter + 1;
+            return jwt.sign({ payload }, process.env.SERVER_JWT_SECRET, {
                 expiresIn: process.env.SERVER_JWT_TIMEOUT,
                 jwtid: jwtidCounter + "",
             });

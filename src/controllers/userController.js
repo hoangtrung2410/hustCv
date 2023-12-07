@@ -1,6 +1,8 @@
 const db = require('../models')
 const { Op } = require('sequelize');
 const Yup = require("yup");
+const {BadRequestError} = require("../utils/apiError");
+const bcrypt = require("bcrypt");
 const User = db.user
 const Business = db.business
 
@@ -44,7 +46,7 @@ const signUp = async (req, res) => {
 const updateUser = async(req, res) => {
     try{
         const id = req.params.id;
-        const [updatedRows] = await User.updateUser(req.body, {where:{id:id}});
+        const [updatedRows] = await User.update(req.body, {where:{id:id}});
         if (updatedRows === 0){
             return res.status(404).json({ error: "RecruitmentPost not found" });
         }
@@ -70,5 +72,5 @@ const getAllUser = async (req,res)=>{
 module.exports ={
     signUp,
     updateUser,
-    getAllUser
+    getAllUser,
 }

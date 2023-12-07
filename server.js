@@ -1,16 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 // Port
-const PORT = 6868;
+const PORT = process.env.PORT || 6868;
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(cookieParser());
 
 // Routers
 const recruitmentPostRouter = require('./src/routers/recruitmentPostRouter.js');
