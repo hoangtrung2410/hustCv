@@ -5,7 +5,7 @@ const router = require('express').Router()
 router.post('/',authMiddleware.authorization,loginController.login)
 router.get('/',authMiddleware.authMiddleware,loginController.logout)
 router.post('/refreshToken',loginController.refreshToken)
-router.get('/forgotpassword', loginController.forgotPassword)
-router.put('/resetpassword', loginController.resetPassword)
+router.get('/forgotPassword', loginController.forgotPassword)
+router.put('/resetPassword', loginController.resetPassword)
 
 module.exports = router

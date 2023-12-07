@@ -1,12 +1,12 @@
 const db = require('../models');
 const Yup = require("yup");
 const bcrypt = require("bcrypt");
-const asyncHandler = require('express-async-handler')
 const User = db.user;
+const asyncHandler = require('express-async-handler')
 const JwtService = require("../services/jwtServices.js");
 const { BadRequestError, UnauthorizedError, ValidationError } = require("../utils/apiError.js");
-const crypto = require('crypto')
 const sendMail = require('../middlerwares/sendMail.js')
+const crypto = require("crypto");
 
 
 const   login= async (req, res) => {
@@ -45,31 +45,41 @@ const   logout = async (req, res) => {
         }
 }
 const forgotPassword = async (req, res) => {
-    const { email } = req.query
-    if (!email) throw new Error('Missing email')
-    const user = await User.findOne({ email })
-    if (!user) throw new Error('User not found')
-    const resetToken = user.createPasswordChangedToken()
-    await user.save()
+    try{
+        const { email } = req.query
+        if (!email) throw new Error('Missing email')
+        const user = await User.findOne({ email })
+        if (!user) throw new Error('User not found')
+        const resetToken = await user.createPasswordChangedToken()
+        console.log("resetToke da luu chua");
+        console.log("resetToken:", resetToken);
+        await user.save();
+        const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/logins/reset-password/${resetToken}>Click here</a>`;
+        const data = {
+            email,
+            html
+        }
+        const rs = await sendMail(data)
+        return res.status(200).json({
+            success: true,
+            rs
+        })
 
-    const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn.Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here</a>`
-
-    const data = {
-        email,
-        html
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            mes: error.message
+        })
     }
-    const rs = await sendMail(data)
-    return res.status(200).json({
-        success: true,
-        rs
-    })
+
 }
 const resetPassword = async (req, res) => {
     const { password, token } = req.body
-    if (!password || !token) throw new Error('Missing imputs')
-    const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex')
+    if (!password || !token) return  new Error('Missing imputs')
+    console.log("password :" +password);
+    const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
     const user = await User.findOne({ passwordResetToken, passwordResetExpires: { $gt: Date.now() } })
-    if (!user) throw new Error('Invalid reset token')
+    if (!user) return new Error('Invalid reset token')
     user.password = password
     user.passwordResetToken = undefined
     user.passwordChangedAt = Date.now()

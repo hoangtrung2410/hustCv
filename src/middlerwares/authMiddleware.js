@@ -54,27 +54,7 @@ const authorization = async (req, res, next) => {
         return next(error);
     }
 };
-const forgot= async (req, res, next) => {
-    try {
-        const schema = Yup.object().shape({
-            email: Yup.string().email().required(),
 
-        });
-        if (!(await schema.isValid(req.body))) {
-            return next(new BadRequestError("Invalid request body"));
-        }
-        const { email } = req.body;
-        const user = await User.findOne({ where: { email } });
-        if (!user) {
-            return next(new BadRequestError("User not found"));
-        }
-        req.user = user;
-        req.isAuthenticated = true;
-        return next();
-    } catch (error) {
-        return next(error);
-    }
-};
 
 module.exports = {
     authMiddleware,
