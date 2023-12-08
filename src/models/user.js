@@ -36,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         passwordResetExpires: {
             type: DataTypes.STRING
+        },
+        timeCreateRefreshToken: {
+            type: DataTypes.DATE
         }
 
     }, {

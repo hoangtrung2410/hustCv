@@ -1,68 +1,50 @@
-const jwt = require ("jsonwebtoken");
-const moment = require ( "moment");
+const jwt = require("jsonwebtoken");
+const moment = require("moment");
 
 let jwtidCounter = 0;
 let blacklist = [];
 
 const JwtService = {
-    jwtSign: (_payload) => {
+    jwtSign: (_payload, options) => {
         try {
             if (process.env.SERVER_JWT !== "true")
-                throw new Error("[JWT] Fastify JWT flag is not setted");
+                new Error("[JWT] Fastify JWT flag is not setted");
 
             console.log("[JWT] Generating fastify JWT sign");
 
             const payload = JSON.parse(JSON.stringify(_payload));
             jwtidCounter = jwtidCounter + 1;
-            return jwt.sign({ payload }, process.env.SERVER_JWT_SECRET, {
-                expiresIn: 10,
+            return jwt.sign({payload}, process.env.SERVER_JWT_SECRET, {
+                expiresIn: options.expiresIn,
                 jwtid: jwtidCounter + "",
             });
         } catch (error) {
             console.log("[JWT] Error during fastify JWT sign");
-            throw error;
-        }
-    },
-    jwtSignIn: (_payload) => {
-        try {
-            if (process.env.SERVER_JWT !== "true")
-                throw new Error("[JWT] Fastify JWT flag is not setted");
-
-            console.log("[JWT] Generating fastify JWT sign");
-
-            const payload = JSON.parse(JSON.stringify(_payload));
-            jwtidCounter = jwtidCounter + 1;
-            return jwt.sign({ payload }, process.env.SERVER_JWT_SECRET, {
-                expiresIn: process.env.SERVER_JWT_TIMEOUT,
-                jwtid: jwtidCounter + "",
-            });
-        } catch (error) {
-            console.log("[JWT] Error during fastify JWT sign");
-            throw error;
+            return error;
         }
     },
 
     jwtGetToken: (request) => {
         try {
             if (process.env.SERVER_JWT !== "true")
-                throw new Error("[JWT] JWT flag is not setted");
+                new Error("[JWT] JWT flag is not setted");
             if (
                 !request.headers.authorization ||
                 request.headers.authorization.split(" ")[0] !== "Bearer"
             )
-                throw new Error("[JWT] JWT token not provided");
+                new Error("[JWT] JWT token not provided");
 
             return request.headers.authorization.split(" ")[1];
         } catch (error) {
             console.log("[JWT] Error getting JWT token");
-            throw error;
+            return error;
         }
     },
 
     jwtVerify: (token) => {
         try {
             if (process.env.SERVER_JWT !== "true")
-                throw new Error("[JWT] JWT flag is not setted");
+                new Error("[JWT] JWT flag is not setted");
 
             return jwt.verify(
                 token,
@@ -74,7 +56,7 @@ const JwtService = {
                             element.iat === decoded.iat &&
                             element.exp === decoded.exp
                         )
-                            throw err;
+                            new err;
                     });
 
                     console.log(decoded);
@@ -84,7 +66,7 @@ const JwtService = {
             );
         } catch (error) {
             console.log("[JWT] Error getting JWT token");
-            throw error;
+            return error;
         }
     },
 
@@ -99,9 +81,9 @@ const JwtService = {
                 );
                 blacklist.shift();
             }
-            const { jti, exp, iat } = jwt.decode(token);
+            const {jti, exp, iat} = jwt.decode(token);
             console.log(`[JWT] Adding JWT ${token} with id ${jti} to blacklist`);
-            blacklist.push({ jti, exp, iat });
+            blacklist.push({jti, exp, iat});
         } catch (error) {
             console.log("[JWT] Error blacklisting fastify JWT token");
             throw error;
