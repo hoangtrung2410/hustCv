@@ -1,5 +1,5 @@
 const dbConfig = require('../config/dbConfig.js')
-const {Sequelize, DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize(
     dbConfig.DB,
@@ -31,60 +31,74 @@ sequelize.authenticate()
 const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-db.sequelize.sync({force: true})
+db.sequelize.sync({ force: false })
     .then(() => {
         console.log('yes re-sync done!')
     })
 
-// Define models
-db.role = require('./role.js')(sequelize, DataTypes) // Role model
-db.business = require('./business.js')(sequelize, DataTypes) // Business model
-db.user = require('./user.js')(sequelize, DataTypes) // User model
-db.personalFile = require('./personalFile.js')(sequelize, DataTypes) // PersonalFile model
-db.criterionJob = require('./criterionJob.js')(sequelize, DataTypes) // CriterionJob model
-db.recruitmentPost = require('./recruitmentPost.js')(sequelize, DataTypes) // RecruitmentPost model
-db.application = require('./application.js')(sequelize, DataTypes) // Application model
-db.skill = require('./skill.js')(sequelize, DataTypes) // Skill model
-db.authQuestion = require('./authQuestion.js')(sequelize, DataTypes) // AuthQuestion model
 
-// Define relationships
-// Role - User
+db.recruitmentPost = require('./recruitmentPost.js')(sequelize, DataTypes)
+db.business = require('./business.js')(sequelize, DataTypes)
+db.user = require('./user.js')(sequelize, DataTypes)
+db.application = require('./application.js')(sequelize, DataTypes)
+db.skill = require('./skill.js')(sequelize, DataTypes)
+db.business = require('./business.js')(sequelize, DataTypes)
+db.role = require('./role.js')(sequelize, DataTypes)
+db.criterionJob = require('./criterionJob.js')(sequelize, DataTypes)
+db.authQuestion = require('./authQuestion.js')(sequelize, DataTypes)
+
+db.study = require('./study.js')(sequelize, DataTypes)
+db.project = require('./project.js')(sequelize, DataTypes)
+db.certificate = require('./certificate.js')(sequelize, DataTypes)
+db.experience = require('./experience.js')(sequelize, DataTypes)
+
+
+
+// relation
+// user
+db.user.belongsTo(db.role, { foreignKey: 'role_id', onUpdate: 'cascade', onDelete: 'cascade' })
+db.user.belongsTo(db.business, { foreignKey: 'business_id', onUpdate: 'cascade', onDelete: 'cascade' })
+db.user.hasOne(db.personalFile, { foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade' })
+db.user.hasOne(db.criterionJob, { foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade' })
+db.user.hasMany(db.recruitmentPost, { foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade' })
+db.user.hasMany(db.application, { foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade' })
+//business
+db.business.hasMany(db.user, { foreignKey: 'business_id', onUpdate: 'cascade', onDelete: 'cascade' })
+//role
+
 db.role.hasMany(db.user, {foreignKey: 'role_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// Business - User
-db.business.hasMany(db.user, {foreignKey: 'business_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// User - PersonalFile
-db.user.hasOne(db.personalFile, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// User - CriterionJob
-db.user.hasOne(db.criterionJob, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// User - RecruitmentPost
-db.user.hasMany(db.recruitmentPost, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// User - Application
-db.user.hasMany(db.application, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// RecruitmentPost - Application
+//recruitmentPost
 db.recruitmentPost.hasMany(db.application, {foreignKey: 'recruitmentPost_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// RecruitmentPost - User
 db.recruitmentPost.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// RecruitmentPost - Skill
 db.recruitmentPost.belongsToMany(db.skill, {through: 'post_skill'})
-// Skill - RecruitmentPost
+
+//skill
 db.skill.belongsToMany(db.recruitmentPost, {through: 'post_skill'})
-// Skill - CriterionJob
 db.skill.belongsToMany(db.criterionJob, {through: 'skill_criterion'})
-// CriterionJob - Skill
+// db.skill.belongsToMany(db.personalFile, {through: 'skill_profile'})
+//criterionJob
 db.criterionJob.belongsToMany(db.skill, {through: 'skill_criterion'})
-// CriterionJob - User
 db.criterionJob.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// Application - RecruitmentPost
-db.application.belongsTo(db.recruitmentPost, {
-    foreignKey: 'recruitmentPost_id',
-    onUpdate: 'cascade',
-    onDelete: 'cascade'
-})
-// Application - User
-db.application.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
-// PersonalFile - Skill
+
+//personalFile
 db.personalFile.belongsToMany(db.skill, {through: 'skill_profile'})
-// PersonalFile - User
 db.personalFile.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.study, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.project, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.certificate, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.experience, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+
+
+//application
+db.application.belongsTo(db.recruitmentPost, {
+    foreignKey: 'recruitmentPost_id', onUpdate: 'cascade', onDelete: 'cascade'
+})
+
+db.application.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
+//personalFile
+db.personalFile.belongsToMany(db.skill, {through: 'skill_profile'})
+db.personalFile.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
+
+
 
 module.exports = db
