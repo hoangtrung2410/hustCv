@@ -8,18 +8,6 @@ module.exports = (sequelize,DataTypes)=>{
         profile:{
             type: DataTypes.TEXT,
         },
-        study:{
-            type: DataTypes.TEXT,
-        },
-        experience:{
-            type: DataTypes.TEXT,
-        },
-        project:{
-            type: DataTypes.TEXT,
-        },
-        certificate:{
-            type: DataTypes.TEXT,
-        },
         cv:{
             type: DataTypes.STRING,
         }
