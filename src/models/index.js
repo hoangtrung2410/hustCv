@@ -46,7 +46,12 @@ db.business = require('./business.js')(sequelize, DataTypes)
 db.role = require('./role.js')(sequelize, DataTypes)
 db.criterionJob = require('./criterionJob.js')(sequelize, DataTypes)
 db.authQuestion = require('./authQuestion.js')(sequelize, DataTypes)
-db.personalFile = require('./personalFile.js')(sequelize, DataTypes)
+
+db.study = require('./study.js')(sequelize, DataTypes)
+db.project = require('./project.js')(sequelize, DataTypes)
+db.certificate = require('./certificate.js')(sequelize, DataTypes)
+db.experience = require('./experience.js')(sequelize, DataTypes)
+
 
 
 // relation
@@ -73,6 +78,15 @@ db.skill.belongsToMany(db.criterionJob, {through: 'skill_criterion'})
 //criterionJob
 db.criterionJob.belongsToMany(db.skill, {through: 'skill_criterion'})
 db.criterionJob.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
+
+//personalFile
+db.personalFile.belongsToMany(db.skill, {through: 'skill_profile'})
+db.personalFile.belongsTo(db.user, {foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.study, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.project, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.certificate, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+db.personalFile.hasMany(db.experience, {foreignKey: 'personalFileId', onUpdate: 'cascade', onDelete: 'cascade'})
+
 
 //application
 db.application.belongsTo(db.recruitmentPost, {
