@@ -40,46 +40,51 @@ const updateRecruitmentPost = async (req, res) => {
     }
 };
 
-const getAllRecruitmentPost = async (req,res)=>{
-    try{
+const getAllRecruitmentPost = async (req, res) => {
+    try {
         let recruitmentPosts = await RecruitmentPost.findAll({})
         res.status(200).json(recruitmentPosts)
     }
-    catch (error){
+    catch (error) {
         console.log(error)
-        res.status(500).json({error :"Internal Server Error"})
+        res.status(500).json({ error: "Internal Server Error" })
     }
 }
 // get one user
-const getOneRecruitmentPost = async(req,res)=>{
-    try{
+const getOneRecruitmentPost = async (req, res) => {
+    try {
         let id = req.params.id
-        const recruitmentPost = await RecruitmentPost.findOne({where:{id:id}})
-        if(!recruitmentPost){
-            res.status(404).json({error:"RecruitmentPost not found"})
+        const recruitmentPost = await RecruitmentPost.findOne({ where: { id: id } })
+        if (!recruitmentPost) {
+            res.status(404).json({ error: "RecruitmentPost not found" })
             return;
         }
         res.status(200).json(recruitmentPost)
     }
-    catch (error){
+    catch (error) {
         console.log(error)
-        res.status(500).json({error :"Internal Server Error"})
+        res.status(500).json({ error: "Internal Server Error" })
 
     }
 }
-const deleteRecruitmentPost = async (req,res)=>{
-    try{
+const deleteRecruitmentPost = async (req, res) => {
+    try {
         let id = req.params.id
-        await RecruitmentPost.destroy({where:{id:id}})
+        const post = await RecruitmentPost.findOne({ where: { id: id } })
+        console.log('>>> check post: ', post)
+        if (!post) {
+            return res.status(404).json("RecruitmentPost does not exit!")
+        }
+        const response = await RecruitmentPost.destroy({ where: { id: id } })
         res.status(200).json("RecruitmentPost deleted")
     }
-    catch (error){
+    catch (error) {
         console.log(error)
-        res.status(500).json({error :"Internal Server Error"})
+        res.status(500).json({ error: "Internal Server Error" })
     }
 }
 // update user
-module.exports={
+module.exports = {
     addRecruitmentPost,
     updateRecruitmentPost,
     getAllRecruitmentPost,
