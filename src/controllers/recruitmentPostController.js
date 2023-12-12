@@ -13,9 +13,8 @@ const addRecruitmentPost = async (req, res) => {
             request: req.body.request,
             form: req.body.form,
             salary: req.body.salary,
-            dateCreate: req.body.dateCreate,
+            dateClose: req.body.dateCreate,
         };
-        console.log(info);
         const recruitmentPost = await RecruitmentPost.create(info);
         return res.status(201).json(recruitmentPost);
     } catch (error) {
@@ -42,7 +41,7 @@ const updateRecruitmentPost = async (req, res) => {
 
 const getAllRecruitmentPost = async (req, res) => {
     try {
-        let recruitmentPosts = await RecruitmentPost.findAll({})
+        let recruitmentPosts = await RecruitmentPost.findAll({ order: [['createdAt', 'DESC']] })
         res.status(200).json(recruitmentPosts)
     }
     catch (error) {
