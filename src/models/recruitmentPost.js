@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
     const RecuritmentPost = sequelize.define("recruitmentPost", {
         id: {
@@ -22,13 +21,13 @@ module.exports = (sequelize, DataTypes) => {
         salary: {
             type: DataTypes.STRING(100),
         },
-        dateCreate: {
+        dateClose: {
             type: DataTypes.DATE,
         },
 
     }, {
 
-        timestamps: false
+        timestamps: true
     })
 
     return RecuritmentPost
