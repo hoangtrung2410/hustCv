@@ -9,7 +9,7 @@ const sequelize = new Sequelize(
         host: dbConfig.HOST,
         port: dbConfig.port,
         dialect: dbConfig.dialect,
-        logging: true,
+        logging: false,
         pool: {
             max: dbConfig.pool.max,
             min: dbConfig.pool.min,
@@ -46,7 +46,7 @@ db.business = require('./business.js')(sequelize, DataTypes)
 db.role = require('./role.js')(sequelize, DataTypes)
 db.criterionJob = require('./criterionJob.js')(sequelize, DataTypes)
 db.authQuestion = require('./authQuestion.js')(sequelize, DataTypes)
-
+db.personalFile = require('./personalFile.js')(sequelize, DataTypes)
 db.study = require('./study.js')(sequelize, DataTypes)
 db.project = require('./project.js')(sequelize, DataTypes)
 db.certificate = require('./certificate.js')(sequelize, DataTypes)
