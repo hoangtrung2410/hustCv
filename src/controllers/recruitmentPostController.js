@@ -13,7 +13,7 @@ const addRecruitmentPost = async (req, res) => {
             request: req.body.request,
             form: req.body.form,
             salary: req.body.salary,
-            dateClose: req.body.dateCreate,
+            dateClose: req.body.dateClose,
         };
         const recruitmentPost = await RecruitmentPost.create(info);
         return res.status(201).json(recruitmentPost);
@@ -26,6 +26,8 @@ const addRecruitmentPost = async (req, res) => {
 const updateRecruitmentPost = async (req, res) => {
     try {
         const id = req.params.id;
+        console.log(req.body)
+
         const [updatedRows] = await RecruitmentPost.update(req.body, { where: { id: id } });
 
         if (updatedRows === 0) {
