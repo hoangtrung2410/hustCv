@@ -1,8 +1,5 @@
 const db = require('../models');
-const Yup = require("yup");
-const bcrypt = require("bcrypt");
 const User = db.user;
-const asyncHandler = require('express-async-handler')
 const JwtService = require("../services/jwtServices.js");
 const {BadRequestError, UnauthorizedError, ValidationError} = require("../utils/apiError.js");
 const sendMail = require('../middlerwares/sendMail.js')
@@ -92,7 +89,6 @@ const forgotPassword = async (req, res) => {
             mes: error.message
         })
     }
-
 }
 const resetPassword = async (req, res) => {
     const {password, token} = req.body

@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto')
-const {nanoid} = require('nanoid');
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("user", {
