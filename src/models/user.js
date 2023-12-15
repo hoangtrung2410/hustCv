@@ -5,11 +5,14 @@ module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("user", {
         id: {
             type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true
-        }, username: {
+        },
+        username: {
             type: DataTypes.STRING(50), allowNull: false
-        }, email: {
+        },
+        email: {
             type: DataTypes.STRING(100), unique: true, allowNull: false, lowercase: true
-        }, password: {
+        },
+        password: {
             type: DataTypes.STRING(255), set(value) {
                 const bcrypt = require('bcrypt');
                 const saltRounds = 10;
@@ -17,28 +20,34 @@ module.exports = (sequelize, DataTypes) => {
                 this.setDataValue('password', hashedPassword);
             }
 
-        }, phoneNumber: {
-            type: DataTypes.STRING(10), allowNull: false,
-        }, birthDay: {
-            type: DataTypes.DATE, allowNull: false,
-        }, tokenRefresh: {
+        },
+        phoneNumber: {
+            type: DataTypes.STRING(10),
+            allowNull: false,
+        },
+        birthDay: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
+        tokenRefresh: {
             type: DataTypes.TEXT, allowNull: true,
+        },
+        timeCreateRefreshToken: {
+            type: DataTypes.DATE
         },
         status: {
             type: DataTypes.BOOLEAN, defaultValue: true
         },
         passwordChangedAt: {
-            type: DataTypes.STRING
+            type: DataTypes.DATE
         },
-        passwordResetToken: {
+        passwordCode: {
             type: DataTypes.STRING(255)
         },
-        passwordResetExpires: {
-            type: DataTypes.STRING
+        codeResetExpires: {
+            type: DataTypes.STRING(255)
         },
-        timeCreateRefreshToken: {
-            type: DataTypes.DATE
-        }
+
 
     }, {
         timestamps: false,
@@ -59,10 +68,11 @@ module.exports = (sequelize, DataTypes) => {
     }
     User.prototype.createPasswordChangedToken = async function (genericParam) {
         try {
-            const resetToken = crypto.randomBytes(32).toString('hex');
-            this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-            this.passwordResetExpires = Date.now() + 15 * 60 * 1000;
-            return resetToken;
+            const code = crypto.randomInt(100000, 1000000);
+            console.log("code = " + code);
+            this.passwordCode = crypto.createHash('sha256').update(code.toString()).digest('hex');
+            this.codeResetExpires = Date.now() + 15 * 60 * 1000;
+            return code;
         } catch (error) {
             console.log(error);
         }
