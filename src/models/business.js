@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
     const Business = sequelize.define("business", {
         id: {
@@ -6,15 +5,15 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
 
-        }, 
-        name: {
-            type: DataTypes.STRING(100),
         },
-        address: {
-            type: DataTypes.STRING(100),
+        businessName: {
+            type: DataTypes.STRING(255),
         },
-        website: {
-            type: DataTypes.STRING(100),
+        businessAddress: {
+            type: DataTypes.STRING(255),
+        },
+        businessWebsite: {
+            type: DataTypes.STRING(255),
         },
     }, {
         timestamps: false

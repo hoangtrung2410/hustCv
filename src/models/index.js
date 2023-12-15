@@ -9,7 +9,7 @@ const sequelize = new Sequelize(
         host: dbConfig.HOST,
         port: dbConfig.port,
         dialect: dbConfig.dialect,
-        logging: true,
+        logging: false,
         pool: {
             max: dbConfig.pool.max,
             min: dbConfig.pool.min,
@@ -31,7 +31,7 @@ sequelize.authenticate()
 const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-db.sequelize.sync({force: true})
+db.sequelize.sync({force: false})
     .then(() => {
         console.log('yes re-sync done!')
     })
