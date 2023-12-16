@@ -1,76 +1,94 @@
-const db = require('../models')
-const { Op } = require('sequelize');
-const Yup = require("yup");
-const {BadRequestError} = require("../utils/apiError");
-const bcrypt = require("bcrypt");
-const User = db.user
-const Business = db.business
-
+const db = require('../models');
+const {Op} = require('sequelize');
+const Yup = require('yup');
+const bcrypt = require('bcrypt');
+const {BadRequestError} = require('../utils/apiError');
+const User = db.user;
 
 const signUp = async (req, res) => {
     try {
-        const { username, email, password, phoneNumber, birthDay } = req.body;
+        const {username, email, password, phoneNumber, birthDay, role_id, business_id} = req.body;
 
         const schema = Yup.object().shape({
             username: Yup.string().required(),
             email: Yup.string().email().required(),
-            password: Yup.string().required().min(6),
-            phoneNumber: Yup.string().required(),
-            birthDay: Yup.date().required(),
+            password: Yup.string().required().min(8),
+            phoneNumber: Yup.string().required().matches(/^\d{10}$/),
+            birthDay: Yup.string().required(),
+            role_id: Yup.number().required(),
+            business_id: Yup.number().nullable(),
         });
 
-
-
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: "Invalid request body" });
+        try {
+            await schema.validate(req.body);
+        } catch (e) {
+            return res.status(400).json({error: 'Invalid input', message: e.message});
         }
-        const checkUser = await User.findOne({
+
+
+        const existingUser = await User.findOne({
             where: {
                 [Op.or]: [
-                    { username: username },
-                    { email: email },
+                    {username: username},
+                    {email: email},
                 ],
             },
         });
-        if (checkUser) {
-            return res.status(403).json({ error: "Username or email already exists" });
+
+        if (existingUser) {
+            console.log("existingUser", existingUser.id);
+            return res.status(401).json({
+                    status: false,
+                }
+            );
         }
-        const user = await User.create(req.body);
-        return res.status(201).json({ user });
+        console.log("role_id", role_id)
+        const user = await User.create({
+            username,
+            email,
+            password,
+            phoneNumber,
+            birthDay,
+            role_id,
+            business_id,
+        });
+
+        return res.status(201).json({user});
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({error: 'Internal Server Error'});
+    }
+};
+
+
+const updateUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const [updatedRows] = await User.update(req.body, {where: {id: id}});
+        if (updatedRows === 0) {
+            return res.status(404).json({error: 'User not found'});
+        }
+
+        const updatedUser = await User.findByPk(id);
+        return res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({error: 'Internal Server Error'});
+    }
+};
+
+const getAllUser = async (req, res) => {
+    try {
+        const users = await User.findAll({});
+        res.status(200).json(users);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({error: 'Internal Server Error'});
     }
 };
 
-const updateUser = async(req, res) => {
-    try{
-        const id = req.params.id;
-        const [updatedRows] = await User.update(req.body, {where:{id:id}});
-        if (updatedRows === 0){
-            return res.status(404).json({ error: "RecruitmentPost not found" });
-        }
-
-        const  updateUser = await User.findByPk(id);
-        return res.status(200).json(updateUser);
-    } catch(error){
-        console.error(error);
-        return res.status(500).json({ error: "Internal Server Error" });
-    }
-};
-
-const getAllUser = async (req,res)=>{
-    try{
-        let user = await User.findAll({})
-        res.status(200).json(user)
-    }
-    catch (error){
-        console.log(error)
-        res.status(500).json({error:"Internal Server Error"})
-    }
-}
-module.exports ={
+module.exports = {
     signUp,
     updateUser,
     getAllUser,
-}
+};
