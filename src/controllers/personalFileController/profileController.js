@@ -105,7 +105,7 @@ const updateExperience = async (req, res) => {
 const deleteEducation = async (req, res) => {
     try {
         const id = req.body.id;
-        await study.update(req.body, {where:{id:id}});
+        await study.destroy(req.body, {where:{id:id}});
     }
     catch(error) {
         console.error(error);
@@ -116,7 +116,7 @@ const deleteEducation = async (req, res) => {
 const deleteProject = async (req, res) => {
     try {
         const id = req.body.id;
-        await project.update(req.body, {where:{id:id}});
+        await project.destroy(req.body, {where:{id:id}});
     }
     catch(error) {
         console.error(error);
@@ -127,7 +127,7 @@ const deleteProject = async (req, res) => {
 const deleteCertificate = async (req, res) => {
     try {
         const id = req.body.id;
-        await certificate.update(req.body, {where:{id:id}});
+        await certificate.destroy(req.body, {where:{id:id}});
     }
     catch(error) {
         console.error(error);
@@ -138,7 +138,7 @@ const deleteCertificate = async (req, res) => {
 const deleteExperience = async (req, res) => {
     try {
         const id = req.body.id;
-        await experience.update(req.body, {where:{id:id}});
+        await experience.destroy(req.body, {where:{id:id}});
     }
     catch(error) {
         console.error(error);
