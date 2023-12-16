@@ -41,7 +41,7 @@ app.use('/api/auths', authRouter);
 app.use('/api/skills', skillRouter)
 
 app.use('/api/profile/certificate', certificateRouter);
-app.use('/api/profile/eudcation', educationRouter);
+app.use('/api/profile/education', educationRouter);
 app.use('/api/profile/project', projectRouter);
 app.use('/api/profile/experiencce', experienceRouter);
 app.use('/api/manageCv',cvRouter);
