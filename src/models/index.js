@@ -45,6 +45,9 @@ db.skill = require('./skill.js')(sequelize, DataTypes)
 db.role = require('./role.js')(sequelize, DataTypes)
 db.criterionJob = require('./criterionJob.js')(sequelize, DataTypes)
 db.authQuestion = require('./authQuestion.js')(sequelize, DataTypes)
+
+db.personalFile = require('./personalFile.js')(sequelize, DataTypes)
+
 db.study = require('./study.js')(sequelize, DataTypes)
 db.project = require('./project.js')(sequelize, DataTypes)
 db.certificate = require('./certificate.js')(sequelize, DataTypes)
