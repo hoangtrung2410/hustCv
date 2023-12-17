@@ -11,57 +11,67 @@ const login = async (req, res) => {
         const {email, password} = req.body;
         const user = await User.findOne({where: {email}});
         if (!user) {
-            throw new BadRequestError("User not found");
+            return res.status(401).json({error: "Invalid credentials"});
         }
         const isPasswordValid = await user.checkPassword(password);
-        console.log("isPasswordValid", isPasswordValid);
         if (!isPasswordValid) {
-            throw new UnauthorizedError("Invalid password");
+            return res.status(401).json({error: "Invalid credentials"});
         }
-
-        const accessToken = JwtService.jwtSign(user.id, {expiresIn: "1h"});
-        const refreshToken = JwtService.jwtSign(user.id, {expiresIn: "7d"});
-        //Todo:
-        const millisecondsInOneDay = 24 * 60 * 60 * 1000; // 1 ngày có 24 giờ, mỗi giờ có 60 phút, mỗi phút có 60 giây, mỗi giây có 1000 milliseconds
-        let checkDate = Date.now() - user.timeCreateRefreshToken;
-        console.log(checkDate)
+        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-10s"});
+        console.log("Generated Access Token:", accessToken);
+        const millisecondsInOneDay = 24 * 60 * 60 * 1000;
+        const checkDate = Date.now() - user.timeCreateRefreshToken;
+        let refreshToken = user.refreshToken;
         if (user.timeCreateRefreshToken === 0 || checkDate > 6 * millisecondsInOneDay) {
-            await User.update({tokenRefresh: refreshToken, timeCreateRefreshToken: Date.now()}, {where: {id: user.id}});
+            refreshToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "7d"});
+            await User.update(
+                {refreshToken, timeCreateRefreshToken: Date.now()},
+                {where: {id: user.id}}
+            );
         } else {
             console.log("Duration is not greater than 6 days");
         }
         const {password: hashedPassword, ...userData} = user.get();
         const resBody = {
+            success: true,
             accessToken,
             refreshToken,
             userData
-        }
-        console.log("Run in here")
-        console.log(resBody)
+        };
         return res.status(200).json(resBody);
     } catch (error) {
-        return res.status(400).json({msg: error.message});
+        console.error(error);
+        return res.status(500).json({error: "Internal Server Error"});
     }
+};
+
+const refreshToken = async (req, res) => {
+    console.log(">>>>>>>>123")
+
+    const refreshToken = req?.body?.refreshToken
+    // Check xem có token hay không
+    if (!refreshToken) throw new Error('No refresh token in cookies')
+    // Check token có hợp lệ hay không
+    const rs = await JwtService.jwtVerify(refreshToken)
+    console.log("rs:", rs)
+    const response = await User.findOne({id: rs._id, refreshToken: refreshToken})
+    console.log("response:", response)
+    return res.status(200).json({
+        success: response ? true : false,
+        accessToken: response ? JwtService.jwtSign(rs, {expiresIn: '1d'}) : null
+    })
 }
-// const refreshToken = async (req, res) => {
-//     const cookie = req.cookies
-//     if (!cookie && !cookie.refreshToken) throw new Error('No refresh token in cookies')
-//     const rs = await JwtService.jwtVerify(cookie.refreshToken)
-//     const user = await User.findOne({_id: rs._id, refreshToken: cookie.refreshToken})
-//     return res.status(200).json({
-//         success: user ? true : false,
-//         newAccessToken: user ? JwtService.jwtSign(user.id) : 'Refresh token not matched'
-//     })
-// }
 
 const logout = async (req, res) => {
     try {
         JwtService.jwtBlacklistToken(JwtService.jwtGetToken(req));
-        res.status(200).json({msg: "Authorized"});
+        console.log(">>>>>>2 " + JwtService.jwtGetToken(req))
+        return res.status(200).json({success: true, message: 'Logout successful'});
     } catch (error) {
-        next(error);
+        console.error(error);
+        return res.status(500).json({error: 'Internal Server Error'});
     }
-}
+};
 const forgotPassword = async (req, res) => {
     try {
         const {email} = req.body
@@ -109,7 +119,7 @@ const checkCode = async (req, res) => {
         console.log("code :" + verificationCode);
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
         console.log("hashedToken:", passwordCode);
-        const user = await User.findOne({where: {passwordCode}})
+        const user = await User.findOne({passwordCode, codeResetExpires: {$gt: Date.now()}})
         console.log("user:", user.id);
         if (!user) {
             res.status(400).json({success: false, mes: "Mã code không tồn tại"})
@@ -153,7 +163,7 @@ const resetPassword = async (req, res) => {
 module.exports = {
     login,
     logout,
-    // refreshToken,
+    refreshToken,
     checkCode,
     forgotPassword,
     resetPassword

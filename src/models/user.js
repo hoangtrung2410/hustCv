@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
-        tokenRefresh: {
+        refreshToken: {
             type: DataTypes.TEXT, allowNull: true,
         },
         timeCreateRefreshToken: {
