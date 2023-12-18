@@ -6,6 +6,13 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+const allowCrossDomain = (req, res, next) => {
+    res.header(`Access-Control-Allow-Origin`, `*`);
+    res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
+    res.header(`Access-Control-Allow-Headers`, `Content-Type`);
+    next();
+};
+
 // Port
 const PORT = process.env.PORT || 6868;
 
@@ -41,7 +48,7 @@ app.use('/api/auths', authRouter);
 app.use('/api/skills', skillRouter)
 
 app.use('/api/profile/certificate', certificateRouter);
-app.use('/api/profile/eudcation', educationRouter);
+app.use('/api/profile/education', educationRouter);
 app.use('/api/profile/project', projectRouter);
 app.use('/api/profile/experiencce', experienceRouter);
 app.use('/api/manageCv',cvRouter);
