@@ -9,7 +9,7 @@ const sequelize = new Sequelize(
         host: dbConfig.HOST,
         port: dbConfig.port,
         dialect: dbConfig.dialect,
-        logging: false,
+        logging: true,
         pool: {
             max: dbConfig.pool.max,
             min: dbConfig.pool.min,
@@ -36,7 +36,9 @@ db.sequelize.sync({ force: false })
         console.log('yes re-sync done!')
     })
 
+
 // Importing models
+db.admin = require('./admin.js')(sequelize, DataTypes)
 db.recruitmentPost = require('./recruitmentPost.js')(sequelize, DataTypes)
 db.business = require('./business.js')(sequelize, DataTypes)
 db.user = require('./user.js')(sequelize, DataTypes)
