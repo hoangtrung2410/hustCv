@@ -1,6 +1,7 @@
 const db = require('../models')
 // create main Model
 const RecruitmentPost = db.recruitmentPost
+const Skill = db.skill
 
 const addRecruitmentPost = async (req, res) => {
     try {
@@ -16,6 +17,10 @@ const addRecruitmentPost = async (req, res) => {
             dateClose: req.body.dateClose,
         };
         const recruitmentPost = await RecruitmentPost.create(info);
+        await req.body.skill?.map(async (item) => {
+            await recruitmentPost.addSkill(item)
+        })
+
         return res.status(201).json(recruitmentPost);
     } catch (error) {
         console.error(error);
@@ -41,7 +46,14 @@ const updateRecruitmentPost = async (req, res) => {
 
 const getAllRecruitmentPost = async (req, res) => {
     try {
-        let recruitmentPosts = await RecruitmentPost.findAll({ order: [['createdAt', 'DESC']] })
+        let recruitmentPosts = await RecruitmentPost.findAll({
+            order: [['createdAt', 'DESC']],
+            include: [{
+                model: Skill,
+                through: { attributes: [] },
+                attributes: ['id', 'name'],
+            }]
+        })
         res.status(200).json(recruitmentPosts)
     }
     catch (error) {
