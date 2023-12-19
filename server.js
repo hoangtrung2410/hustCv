@@ -52,7 +52,7 @@ app.use('/api/profile/certificate', certificateRouter);
 app.use('/api/profile/education', educationRouter);
 app.use('/api/profile/project', projectRouter);
 app.use('/api/profile/experiencce', experienceRouter);
-app.use('/api/manageCv',cvRouter);
+app.use('/api/manageCv', cvRouter);
 
 
 app.use('/api/roles', roleRouter);

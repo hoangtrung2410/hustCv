@@ -7,7 +7,7 @@ const User = db.user;
 
 const signUp = async (req, res) => {
     try {
-        const {username, email, password, phoneNumber, birthDay, role_id, business_id} = req.body;
+
 
         const schema = Yup.object().shape({
             username: Yup.string().required(),
@@ -24,12 +24,10 @@ const signUp = async (req, res) => {
         } catch (e) {
             return res.status(400).json({error: 'Invalid input', message: e.message});
         }
-
-
+        let {username, email, password, phoneNumber, birthDay, role_id, business_id} = req.body;
         const existingUser = await User.findOne({
             where: {
                 [Op.or]: [
-                    {username: username},
                     {email: email},
                 ],
             },
@@ -52,7 +50,6 @@ const signUp = async (req, res) => {
             role_id,
             business_id,
         });
-
         return res.status(201).json({user});
     } catch (error) {
         console.error('Error:', error);
@@ -80,7 +77,11 @@ const updateUser = async (req, res) => {
 const getAllUser = async (req, res) => {
     try {
         const users = await User.findAll({});
-        res.status(200).json(users);
+        res.status(200).json({
+            statuscode: 200,
+            message: "0K",
+            users
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({error: 'Internal Server Error'});
