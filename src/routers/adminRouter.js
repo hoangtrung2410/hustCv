@@ -1,3 +1,4 @@
+const { ControlTower } = require("aws-sdk")
 const adminsController = require("../controllers/adminController.js")
 
 const router = require('express').Router()
@@ -13,10 +14,17 @@ router.put('/changePassword',adminsController.verifyToken,adminsController.updat
 
 router.get('/allUser',adminsController.verifyToken,adminsController.getAllUsers)
 
-router.post('/oneUserByUsername',adminsController.verifyToken,adminsController.getUserByUsername)
+router.post('/allUserByUsername',adminsController.verifyToken,adminsController.getUserByUsername)
 
-router.post('/oneUserByEmail',adminsController.verifyToken,adminsController.getUserByEmail)
+router.post('/allUserByEmail',adminsController.verifyToken,adminsController.getUserByEmail)
 
-router.post('/oneUserBySDT',adminsController.verifyToken,adminsController.getUserByPhoneNumber)
+router.post('/allUserBySDT',adminsController.verifyToken,adminsController.getUserByPhoneNumber)
 
+router.post('/allEmailPhoneNumber',adminsController.verifyToken,adminsController.getUserByEmailAndPhoneNumber)
+
+router.post('/allEmailUserName',adminsController.verifyToken,adminsController.getUserByEmailAndUsername)
+
+router.post('/allUsernamePhoneNumber',adminsController.verifyToken,adminsController.getUserByUsernameAndPhoneNumber)
+
+router.post('/allUserCheck',adminsController.verifyToken,adminsController.getUserByEmailUsernameAndPhoneNumber)
 module.exports = router

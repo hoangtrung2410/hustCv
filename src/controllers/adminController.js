@@ -153,7 +153,7 @@ const getUserByUsername = async (req, res) => {
     const { username } = req.body;
   
     try {
-      const user = await User.findOne({ where: { username } });
+      const user = await User.findAll({ where: { username } });
   
       if (user) {
         res.status(200).json(user);
@@ -171,7 +171,7 @@ const getUserByEmail = async (req, res) => {
     const { email } = req.body;
   
     try {
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findAll({ where: { email } });
   
       if (user) {
         res.status(200).json(user);
@@ -188,7 +188,7 @@ const getUserByPhoneNumber = async (req, res) => {
     const { phoneNumber } = req.body;
   
     try {
-      const user = await User.findOne({ where: { phoneNumber } });
+      const user = await User.findAll({ where: { phoneNumber } });
   
       if (user) {
         res.status(200).json(user);
@@ -201,6 +201,74 @@ const getUserByPhoneNumber = async (req, res) => {
     }
   };
 
+  const getUserByEmailAndPhoneNumber = async (req, res) => {
+    const { email, phoneNumber } = req.body;
+
+    try {
+        const user = await User.findAll({ where: { email, phoneNumber } });
+
+        if (user.length) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const getUserByUsernameAndPhoneNumber = async (req, res) => {
+  const { username, phoneNumber } = req.body;
+
+  try {
+      const user = await User.findAll({ where: { username, phoneNumber } });
+
+      if (user.length) {
+          res.status(200).json(user);
+      } else {
+          res.status(404).json({ message: 'User not found' });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const getUserByEmailAndUsername = async (req, res) => {
+  const { email, username } = req.body;
+
+  try {
+      const user = await User.findAll({ where: { email, username } });
+
+      if (user.length) {
+          res.status(200).json(user);
+      } else {
+          res.status(404).json({ message: 'User not found' });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const getUserByEmailUsernameAndPhoneNumber = async (req, res) => {
+  const { email, username, phoneNumber } = req.body;
+
+  try {
+      const user = await User.findAll({ where: { email, username, phoneNumber } });
+
+      if (user.length) {
+          res.status(200).json(user);
+      } else {
+          res.status(404).json({ message: 'User not found' });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 module.exports={
     registerAdmins,
     loginAdmins,
@@ -210,5 +278,9 @@ module.exports={
     getAllUsers,
     getUserByUsername,
     getUserByEmail,
-    getUserByPhoneNumber
+    getUserByPhoneNumber,
+    getUserByEmailAndPhoneNumber,
+    getUserByEmailAndUsername,
+    getUserByUsernameAndPhoneNumber,
+    getUserByEmailUsernameAndPhoneNumber
 }
