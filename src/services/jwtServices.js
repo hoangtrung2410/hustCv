@@ -23,28 +23,33 @@ const JwtService = {
             return error;
         }
     },
-
     jwtGetToken: (request) => {
         try {
-            if (process.env.SERVER_JWT !== "true")
-                new Error("[JWT] JWT flag is not setted");
-            if (
-                !request.headers.authorization ||
-                request.headers.authorization.split(" ")[0] !== "Bearer"
-            )
-                new Error("[JWT] JWT token not provided");
-
-            return request.headers.authorization.split(" ")[1];
+            if (process.env.SERVER_JWT !== "true") {
+                console.log("[JWT] JWT flag is not set");
+                throw new Error("[JWT] JWT flag is not set");
+            }
+            console.log(">>>>>>>>>1");
+            console.log(request?.headers);
+            if (!request?.headers?.authorization || !request?.headers?.authorization?.startsWith("Bearer ")) {
+                console.log("[JWT] JWT token not provided or invalid format");
+                throw new Error("[JWT] JWT token not provided or invalid format");
+            }
+            const token = request.headers.authorization.split(" ")[1];
+            console.log("[JWT] Authorization Header:", request.headers.authorization);
+            console.log("[JWT] Received Token:", token);
+            return token;
         } catch (error) {
-            console.log("[JWT] Error getting JWT token");
-            return error;
+            console.log("[JWT] Error getting JWT token:", error.message);
+            throw error;
         }
     },
+
 
     jwtVerify: (token) => {
         try {
             if (process.env.SERVER_JWT !== "true")
-                new Error("[JWT] JWT flag is not setted");
+                throw new Error("[JWT] JWT flag is not setted");
 
             return jwt.verify(
                 token,
@@ -56,7 +61,7 @@ const JwtService = {
                             element.iat === decoded.iat &&
                             element.exp === decoded.exp
                         )
-                            new err;
+                            throw err;
                     });
 
                     console.log(decoded);
@@ -66,9 +71,10 @@ const JwtService = {
             );
         } catch (error) {
             console.log("[JWT] Error getting JWT token");
-            return error;
+            throw error;
         }
     },
+
 
     jwtBlacklistToken: (token) => {
         try {

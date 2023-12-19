@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: {
             type: DataTypes.STRING(255), set(value) {
-                const bcrypt = require('bcrypt');
                 const saltRounds = 10;
                 const hashedPassword = bcrypt.hashSync(value, saltRounds);
                 this.setDataValue('password', hashedPassword);
@@ -29,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
-        tokenRefresh: {
+        refreshToken: {
             type: DataTypes.TEXT, allowNull: true,
         },
         timeCreateRefreshToken: {
@@ -50,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 
 
     }, {
-        timestamps: false,
+        timestamps: true,
 
     });
 
