@@ -2,8 +2,8 @@ const profileController = require("../../controllers/personalFileController/prof
 
 const router = require('express').Router()
 
-router.get('/',profileController.getAllEducation)
-router.get('/:id',profileController.getOneEducation)
+router.post('/getAll',profileController.getAllEducation)
+router.post('/getOne',profileController.getOneEducation)
 router.post('/',profileController.addEducation)
 router.put('/:id',profileController.updateEducation)
 router.delete('/:id',profileController.deleteEducation)

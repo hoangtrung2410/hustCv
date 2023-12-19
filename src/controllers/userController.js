@@ -4,6 +4,7 @@ const Yup = require('yup');
 const bcrypt = require('bcrypt');
 const {BadRequestError} = require('../utils/apiError');
 const User = db.user;
+const personalFile = db.personalFile;
 
 const signUp = async (req, res) => {
     try {
@@ -50,6 +51,12 @@ const signUp = async (req, res) => {
             role_id,
             business_id,
         });
+        await personalFile.create({
+            id : user.id,
+            profile: '',
+            cv: '',
+            user_id: user.id
+        })
         return res.status(201).json({user});
     } catch (error) {
         console.error('Error:', error);
