@@ -149,8 +149,8 @@ const getAllUsers = async (req, res) => {
   };
   
   // Find user by username
-  const getUserByUsername = async (req, res) => {
-    const { username } = req.params;
+const getUserByUsername = async (req, res) => {
+    const { username } = req.body;
   
     try {
       const user = await User.findOne({ where: { username } });
@@ -167,8 +167,8 @@ const getAllUsers = async (req, res) => {
   };
   
   // Find user by email
-  const getUserByEmail = async (req, res) => {
-    const { email } = req.params;
+const getUserByEmail = async (req, res) => {
+    const { email } = req.body;
   
     try {
       const user = await User.findOne({ where: { email } });
@@ -184,8 +184,8 @@ const getAllUsers = async (req, res) => {
     }
   };
   
-  const getUserByPhoneNumber = async (req, res) => {
-    const { phoneNumber } = req.params;
+const getUserByPhoneNumber = async (req, res) => {
+    const { phoneNumber } = req.body;
   
     try {
       const user = await User.findOne({ where: { phoneNumber } });
@@ -208,4 +208,7 @@ module.exports={
     updatePassword,
     verifyToken,
     getAllUsers,
+    getUserByUsername,
+    getUserByEmail,
+    getUserByPhoneNumber
 }

@@ -13,5 +13,10 @@ router.put('/changePassword',adminsController.verifyToken,adminsController.updat
 
 router.get('/allUser',adminsController.verifyToken,adminsController.getAllUsers)
 
+router.post('/oneUserByUsername',adminsController.verifyToken,adminsController.getUserByUsername)
+
+router.post('/oneUserByEmail',adminsController.verifyToken,adminsController.getUserByEmail)
+
+router.post('/oneUserBySDT',adminsController.verifyToken,adminsController.getUserByPhoneNumber)
 
 module.exports = router
