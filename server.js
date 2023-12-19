@@ -35,6 +35,7 @@ const projectRouter = require('./src/routers/profileRouter/projectRouter.js');
 const experienceRouter = require('./src/routers/profileRouter/experienceRouter.js');
 const certificateRouter = require('./src/routers/profileRouter/certificateRouter.js');
 const cvRouter = require('./src/routers/cvRouter.js');
+const adminRouter = require('./src/routers/adminRouter.js');
 
 
 const roleRouter = require('./src/routers/roleRouter.js');
@@ -55,7 +56,7 @@ app.use('/api/manageCv', cvRouter);
 
 
 app.use('/api/roles', roleRouter);
-
+app.use('/api/admin',adminRouter)
 
 // Start the server
 app.listen(PORT, () => {
