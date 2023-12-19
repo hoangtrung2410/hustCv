@@ -1,4 +1,4 @@
-const manageCvController = require("../controllers/manageCvController")
+const manageCvController = require("../controllers/personalFileController/manageCVController")
 
 const router = require('express').Router()
 
