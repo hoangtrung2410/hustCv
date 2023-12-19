@@ -149,6 +149,7 @@ const deleteExperience = async (req, res) => {
 const getAllEducation = async (req,res)=>{
     try{
         let personalFileId = req.body.personalFileId
+        // let personalFileId = 1
         let allEducation = await study.findAll({where:{personalFileId: personalFileId}});
         res.status(200).json(allEducation);
     }
