@@ -86,7 +86,7 @@ exports.getAcceptedApplications = async (req, res) => {
                 status: "ACCEPTED",
                 recruitmentPost_id: postId,
             },
-            include: {model: db.user, attributes: ["username", "email"]}
+            include: {model: db.user, attributes: ["username", "email", "phoneNumber"]}
         })
         return res.status(200).json({
             data: acceptedApplications
@@ -132,7 +132,7 @@ exports.getPendingApplications = async (req, res) => {
                 status: "PENDING",
                 recruitmentPost_id: postId,
             },
-            include: {model: db.user, attributes: ["username", "email"]}
+            include: {model: db.user, attributes: ["username", "email", "phoneNumber"]}
         })
         return res.status(200).json({
             data: acceptedApplications
@@ -163,7 +163,7 @@ exports.getDetailedApplication = async (req, res) => {
                 id: applicationId,
                 status: "PENDING"
             },
-            include: [{model: db.user, attributes: ["username", "email"]}]
+            include: [{model: db.user, attributes: ["username", "email", "phoneNumber"]}]
         })
         if (!application){
             return res.status(404).json({
@@ -199,7 +199,7 @@ exports.getDetailedApplication = async (req, res) => {
         })
     }
 }
-exports.postAcceptApplication = async (req, res) => {
+exports.putAcceptApplication = async (req, res) => {
     try{
             // get user Id
         const payload = getUserIdFromToken(req)
@@ -245,7 +245,7 @@ exports.postAcceptApplication = async (req, res) => {
         })
     }
 }
-exports.postDeclineApplication = async (req, res) => {
+exports.putDeclineApplication = async (req, res) => {
     try{
         // get user Id
         const payload = getUserIdFromToken(req)
@@ -309,7 +309,7 @@ exports.getAcceptedDetailedApplication = async (req, res) => {
                 id: applicationId,
                 status: "ACCEPTED"
             },
-            include: [{model: db.user, attributes: ["username", "email"]}]
+            include: [{model: db.user, attributes: ["username", "email", "phoneNumber"]}]
         })
         if (!application){
             return res.status(404).json({
