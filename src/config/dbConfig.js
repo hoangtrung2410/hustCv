@@ -3,6 +3,7 @@ module.exports = {
     USER: 'admin',
     PASSWORD: '12345678',
     DB: 'hustCv',
+    dialect: 'mysql',
     port: 3306,
     pool: {
         max: 5,
