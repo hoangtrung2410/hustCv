@@ -59,10 +59,13 @@ const addCv = (req, res) => {
 
 const getCv = async (req, res) => {
     const bucketName = 'hustcv-1';
-    const fileName = `${req.body.userId}.pdf`;
+    // const fileName = `${req.body.userId}.pdf`;
+    const fileName = "Cv.pdf"
     fileUrl = await s3.getSignedUrl('getObject', {
         Bucket: bucketName,
         Key: fileName,
+        ResponseContentType: 'application/pdf',
+        ResponseContentDisposition: 'inline'
     });
     res.redirect(fileUrl);
 }

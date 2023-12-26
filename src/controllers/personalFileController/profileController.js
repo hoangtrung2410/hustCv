@@ -8,11 +8,15 @@ const certificate = db.certificate;
 
 const addEducation = async (req, res) => {
     try {
+        if (!req.body.name) {
+            return res.status(400).json({ error: "Bad request: Missing request body" });
+        }
         const info = {
             name: req.body.name,
             personalFileId: req.body.personalFileId
         };
-        await study.create(info);
+        const newEducation = await study.create(info);
+        return res.status(201).json(newEducation);
     }
 catch(error){
         console.error(error);
@@ -26,7 +30,8 @@ const addProject = async (req, res) => {
             name: req.body.name,
             personalFileId: req.body.personalFileId
         };
-        await project.create(info);
+        const newProject = await project.create(info);
+        return res.status(201).json(newProject);
     }
 catch(error){
         console.error(error);
@@ -64,8 +69,13 @@ catch(error){
 
 const updateEducation = async (req, res) => {
     try {
-        const id = req.body.id;
+        const id = req.params.id;
+        const educationInfo = await study.findOne({where: { id: id }})
+        if (!educationInfo){
+            return res.status(404).json({ error: "not found eduId"})
+        }
         await study.update(req.body, {where:{id:id}});
+        return res.status(201).json('update complete');
     } catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -75,7 +85,7 @@ const updateEducation = async (req, res) => {
 const updateProject = async (req, res) => {
     try {
         const id = req.body.id;
-        await project.update(req.body, {where:{id:id}});
+        await project.update({name: req.body}, {where:{id:id}});
     } catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -104,8 +114,13 @@ const updateExperience = async (req, res) => {
 
 const deleteEducation = async (req, res) => {
     try {
-        const id = req.body.id;
-        await study.destroy(req.body, {where:{id:id}});
+        const id = req.params.id;
+        let educationInfo = await study.findOne({ where: { id: id }})
+        if (!educationInfo){
+            return res.status(404).json({ error: "not found education info"})
+        }
+        await study.destroy({where:{id:id}});
+        return res.status(200).json("deleted education")
     }
     catch(error) {
         console.error(error);
@@ -239,7 +254,7 @@ const getOneExperience = async (req,res) => {
 }
 const getOneCertificate = async (req,res) => {
     try{
-        let id = req.body.id
+        let id = req.params.id
         const getOneCertificate = await certificate.findOne({where:{id:id}})
         if(!getOneCertificate){
             res.status(404).json({error:"detail not found"})
