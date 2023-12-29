@@ -1,4 +1,6 @@
+const db = require('../../models')
 const s3 = require('../../models/CV.js')
+const personalFile = db.personalFile
 
 const deleteCv = (req, res) => {
     const bucketName = 'hustcv-1';

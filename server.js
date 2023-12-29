@@ -36,7 +36,8 @@ const experienceRouter = require('./src/routers/profileRouter/experienceRouter.j
 const certificateRouter = require('./src/routers/profileRouter/certificateRouter.js');
 const cvRouter = require('./src/routers/cvRouter.js');
 const adminRouter = require('./src/routers/adminRouter.js');
-
+const userInfor = require('./src/routers/profileRouter/userInforRouter.js')
+const skillProfile = require('./src/routers/profileRouter/skillProfileRouter.js')
 
 const roleRouter = require('./src/routers/roleRouter.js');
 
@@ -52,6 +53,8 @@ app.use('/api/profile/certificate', certificateRouter);
 app.use('/api/profile/education', educationRouter);
 app.use('/api/profile/project', projectRouter);
 app.use('/api/profile/experiencce', experienceRouter);
+app.use('/api/profile/userInfor', userInfor);
+app.use('/api/profile/skill', skillProfile)
 app.use('/api/manageCv', cvRouter);
 
 
