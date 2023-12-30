@@ -2,9 +2,9 @@ const profileController = require("../../controllers/personalFileController/prof
 
 const router = require('express').Router()
 
-router.get('/',profileController.getAllCertificate)
+router.post('/getAll',profileController.getAllCertificate)
 router.get('/:id',profileController.getOneCertificate)
-router.post('/',profileController.addCertificate)
+router.post('/add',profileController.addCertificate)
 router.put('/:id',profileController.updateCertificate)
 router.delete('/:id',profileController.deleteCertificate)
 
