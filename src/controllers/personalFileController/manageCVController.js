@@ -1,78 +1,112 @@
 const db = require('../../models')
 const s3 = require('../../models/CV.js')
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3")
 const personalFile = db.personalFile
 
-const deleteCv = (req, res) => {
-    const bucketName = 'hustcv-1';
-    const key = `${req.body.userId}.pdf`;
-    // const key = 'baocao.pdf';
-    const params = {
+const client = new S3Client({
+    credentials: {
+      accessKeyId: 'AKIA5SZVMOPVDBF6JQKD',
+      secretAccessKey: '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'
+    },
+    region: 'ap-southeast-2'
+});
+const bucketName = 'hustcv-1';
+
+
+const deleteCv2 = async (data) => {
+    const key = data;
+    const command = new DeleteObjectCommand({
         Bucket: bucketName,
         Key: key,
+    });
+    
+    try {
+        const response = await client.send(command);
+        console.log('xoa hoan tat')
+    } catch (err) {
+        console.error(err);
+        console.log('loi xoa')
     }
-    s3.deleteObject(params, (error, data) => {
-        if (error) {
-            console.log('loi xoa', error);
-            res.send('loi xoa');
-        }
-        else {
-            console.log('xoa hoan tat');
-            res.send('xoa hoan tat');
-        }
-    })
 }
 
-const addCv = (req, res) => {
-    const bucketName = 'hustcv-1';
-    const key = `${req.body.userId}.pdf`;
-    const fileContent = req.body.Cv;
-
-    s3.deleteObject({
-        Bucket: bucketName,
-        Key: key,
-    }, (error, data) => {
-        if (error) {
-            console.log('loi xoa', error);
-            res.send('loi xoa');
-        }
-        else {
-            console.log('xoa hoan tat');
-            res.send('xoa hoan tat');
-        }
-    })
+const addCv = async (req, res) => {
+    // const key = `${req.body.id}.pdf`;
+    const user = await personalFile.findOne({where: {id: req.body.id}});
+    const id = req.body.id;
+    const key = Date.now() + '-' + Math.round(Math.random() * 1E9) + '-' + req.file.originalname;
+    const fileContent = req.file.buffer;
 
     const params = {
         Bucket: bucketName,
         Key: key,
         Body: fileContent
     };
+
     s3.upload(params, async (err, data) => {
         if (err) {
             console.error("Error uploading file:", err);
-            res.send('loi upload');
+            res.status(404).json({ error: "loi upload"})
         }
         else {
             console.log("File uploaded successfully. ETag:", data.ETag);
-            res.send('upload hoan tat');
+            if (user.cv != ''){
+                deleteCv2(user.cv)
+            }
+            try{
+                await personalFile.update({cv: data.Key}, {where: {id: id}})
+            }
+            catch (error) {
+                console.log(error)
+            }
+            res.status(201).json(data)
         }
     });
+
     
 }
 
-const getCv = async (req, res) => {
-    const bucketName = 'hustcv-1';
-    // const fileName = `${req.body.userId}.pdf`;
-    const fileName = "Cv.pdf"
-    fileUrl = await s3.getSignedUrl('getObject', {
-        Bucket: bucketName,
-        Key: fileName,
-        ResponseContentType: 'application/pdf',
-        ResponseContentDisposition: 'inline'
-    });
-    res.redirect(fileUrl);
+const getUrlCv = async (req, res) => {
+    try{
+        const id = req.body.id;
+        const user = await personalFile.findOne({where: {id: id}});
+        const fileName = user.cv
+        if (fileName != ''){
+            const fileUrl = await s3.getSignedUrl('getObject', {
+                Bucket: bucketName,
+                Key: fileName,
+                ResponseContentType: 'application/pdf',
+                ResponseContentDisposition: 'inline'
+            });
+            res.status(201).json({url: fileUrl});
+        }
+        else {
+            res.status(404).json('lỗi tìm file')
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.status(404).json('loi server')
+    }
+}
+
+const getNameCv = async (req, res) => {
+    try {
+        const id = req.body.id;
+        const user = await personalFile.findOne({where: {id: id}});
+        if (user.cv == ''){
+            res.status(201).json({name: ''});
+        }
+        const fileName = user.cv.split('-')[2]
+        res.status(201).json({name: fileName});
+    }
+    catch(err) {
+        // res.status(404).json('not found')
+    }
 }
 
 module.exports = {
     addCv,
-    getCv,
+    getUrlCv,
+    deleteCv2,
+    getNameCv,
 }
