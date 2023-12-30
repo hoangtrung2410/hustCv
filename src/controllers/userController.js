@@ -8,8 +8,6 @@ const personalFile = db.personalFile;
 
 const signUp = async (req, res) => {
     try {
-
-
         const schema = Yup.object().shape({
             username: Yup.string().required(),
             email: Yup.string().email().required(),
@@ -37,8 +35,8 @@ const signUp = async (req, res) => {
         if (existingUser) {
             console.log("existingUser", existingUser.id);
             return res.status(401).json({
-                    status: false,
-                }
+                  status: false,
+              }
             );
         }
         console.log("role_id", role_id)
