@@ -2,9 +2,9 @@ const profileController = require("../../controllers/personalFileController/prof
 
 const router = require('express').Router()
 
-router.get('/',profileController.getAllProject)
+router.post('/getAll',profileController.getAllProject)
 router.get('/:id',profileController.getOneProject)
-router.post('/',profileController.addProject)
+router.post('/add',profileController.addProject)
 router.put('/:id',profileController.updateProject)
 router.delete('/:id',profileController.deleteProject)
 
