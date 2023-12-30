@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+require('express-async-handler')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 
@@ -46,7 +47,7 @@ const recruiterApplicationRouter = require('./src/routers/recruiterApplicationRo
 app.use('/api/recruitmentPosts', recruitmentPostRouter);
 app.use('/api/business', businessRouter);
 app.use('/api/users', userRouter);
-app.use('/api/auths', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/skills', skillRouter)
 
 app.use('/api/profile/certificate', certificateRouter);

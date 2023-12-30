@@ -54,7 +54,7 @@ const login = async (req, res) => {
                 error: 'Invalid password.'
             });
         }
-        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-10s"});
+        const accessToken = JwtService.jwtSign({ userId: user.id, roleId: user.role_id }, { expiresIn: "30m" });
         console.log("Generated Access Token:", accessToken);
         const millisecondsInOneDay = 24 * 60 * 60 * 1000;
         const checkDate = Date.now() - user.timeCreateRefreshToken;
