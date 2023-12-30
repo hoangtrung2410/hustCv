@@ -59,7 +59,6 @@ app.use('/api/manageCv', cvRouter);
 app.use('/api/roles', roleRouter);
 app.use('/api/admin',adminRouter)
 app.use('/api/recruiterApplication', recruiterApplicationRouter);
-app.post('/uploadFile', postFile)
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
