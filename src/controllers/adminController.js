@@ -268,7 +268,20 @@ const getUserByEmailUsernameAndPhoneNumber = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+const updateUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const [updatedRows] = await User.update(req.body, {where: {id: id}});
+        if (updatedRows === 0) {
+            return res.status(404).json({error: 'User not found'});
+        }
 
+        return res.status(200).json('Cập nhật thành công');
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({error: 'Internal Server Error'});
+    }
+};
 module.exports={
     registerAdmins,
     loginAdmins,
@@ -282,5 +295,6 @@ module.exports={
     getUserByEmailAndPhoneNumber,
     getUserByEmailAndUsername,
     getUserByUsernameAndPhoneNumber,
-    getUserByEmailUsernameAndPhoneNumber
+    getUserByEmailUsernameAndPhoneNumber,
+    updateUser
 }
