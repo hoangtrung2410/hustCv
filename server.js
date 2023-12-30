@@ -40,7 +40,7 @@ const userInfor = require('./src/routers/profileRouter/userInforRouter.js')
 const skillProfile = require('./src/routers/profileRouter/skillProfileRouter.js')
 
 const roleRouter = require('./src/routers/roleRouter.js');
-
+const recruiterApplicationRouter = require('./src/routers/recruiterApplicationRouter.js');
 
 // Routes
 app.use('/api/recruitmentPosts', recruitmentPostRouter);
@@ -61,6 +61,7 @@ app.use('/api/manageCv', cvRouter);
 app.use('/api/roles', roleRouter);
 app.use('/api/admin',adminRouter)
 
+app.use('/api/recruiterApplication', recruiterApplicationRouter);
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
