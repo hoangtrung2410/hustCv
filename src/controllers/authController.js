@@ -8,7 +8,6 @@ const {BadRequestError, UnauthorizedError, ValidationError} = require("../utils/
 const sendMail = require('../middlerwares/sendMail.js')
 const login = async (req, res) => {
     try {
-        console.log(">>>>>>1")
         const schema = Yup.object().shape({
             email: Yup.string().email().required().test(
               'is-gmail',
@@ -89,26 +88,20 @@ const login = async (req, res) => {
 };
 const refreshToken = async (req, res) => {
     try {
-        console.log(">>>>>>>>123")
         const refreshToken = req?.body?.refreshToken
-        // Check xem có token hay không
         if (!refreshToken)
             return res.status(401).json({
                 statusCode: 401,
                 message: "Unauthorized",
                 error: 'Invalid password.'
             });
-        // Check token có hợp lệ hay không
         const rs = await JwtService.jwtVerify(refreshToken)
-        console.log("rs:", rs._id)
+        console.log("rs:", rs)
         const response = await User.findOne({id: rs._id, refreshToken: refreshToken})
         console.log("response:", response)
         return res.status(200).json({
             success: response ? true : false,
-            accessToken: response ? JwtService.jwtSign({
-                userId: response.id,
-                roleId: response.role_id
-            }, {expiresIn: '1d'}) : null
+            accessToken: response ? JwtService.jwtSign(rs, {expiresIn: '1d'}) : null
         })
     } catch (e) {
         return res.status(500).json({
@@ -282,6 +275,7 @@ const resetPassword = async (req, res) => {
               }
             );
         }
+        console.log("newPassword: ", +newPassword);
         const user = await User.findOne({
             where: {
                 email: email
@@ -293,7 +287,6 @@ const resetPassword = async (req, res) => {
                 message: "Bad Request",
             });
         }
-        console.log("user_reset:", user.id);
         user.password = newPassword;
         user.passwordCode = null;
         user.passwordChangedAt = Date.now();
