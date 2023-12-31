@@ -15,7 +15,7 @@ const addEducation = async (req, res) => {
         }
         const info = {
             name: req.body.name,
-            personalFileId: req.body.personalFileId
+            personalFileId: req.userId
         };
         const newEducation = await study.create(info);
         return res.status(201).json(newEducation);
@@ -33,7 +33,7 @@ const addProject = async (req, res) => {
         }
         const info = {
             name: req.body.name,
-            personalFileId: req.body.personalFileId
+            personalFileId: req.userId
         };
         const newProject = await project.create(info);
         return res.status(201).json(newProject);
@@ -51,7 +51,7 @@ const addCertificate = async (req, res) => {
         }
         const info = {
             name: req.body.name,
-            personalFileId: req.body.personalFileId
+            personalFileId: req.userId
         };
         const newCertificate = await certificate.create(info);
         return res.status(201).json(newCertificate)
@@ -66,7 +66,7 @@ const addExperience = async (req, res) => {
     try {
         const info = {
             name: req.body.name,
-            personalFileId: req.body.personalFileId
+            personalFileId: req.userId
         };
         await experience.create(info);
     }
@@ -81,7 +81,7 @@ const addSkill = async (req, res) => {
         if(!req.body) {
             return res.status(400).json({ error: "Bad request: Missing request body" });
         }
-        const user = await personalFile.findOne({where: {id: req.body.id}})
+        const user = await personalFile.findOne({where: {id: req.userId}})
         const skills = await user.getSkills();
         await user.removeSkills(skills);
         // const skillProfile = await req.body.skill?.map(async (item) => {
@@ -166,6 +166,24 @@ const updateUserInfor = async (req, res) => {
     }
 }
 
+const updateSkill = async (req, res) => {
+    try {
+        if(!req.body) {
+            return res.status(400).json({ error: "Bad request: Missing request body" });
+        }
+        const user = await personalFile.findOne({where: {id: req.userId}})
+        const skills = await user.getSkills();
+        await user.setSkills(user.body.skill);
+        // await Promise.all(req.body.skill?.map(async (item) => {
+        //     await user.addSkill(item);
+        // }));
+        return res.status(201).json(user)
+    }
+    catch (error) {
+
+    }
+}
+
 const deleteEducation = async (req, res) => {
     try {
         const id = req.params.id;
@@ -216,7 +234,7 @@ const deleteCertificate = async (req, res) => {
 
 const deleteExperience = async (req, res) => {
     try {
-        const id = req.body.id;
+        const id = req.userId;
         await experience.destroy(req.body, {where:{id:id}});
     }
     catch(error) {
@@ -227,7 +245,7 @@ const deleteExperience = async (req, res) => {
 
 const getAllEducation = async (req,res)=>{
     try{
-        let personalFileId = req.body.personalFileId
+        let personalFileId = req.userId
         // let personalFileId = 1
         let allEducation = await study.findAll({where:{personalFileId: personalFileId}});
         return res.status(200).json(allEducation);
@@ -239,7 +257,7 @@ const getAllEducation = async (req,res)=>{
 };
 const getAllProject = async (req,res)=>{
     try{
-        let personalFileId = req.body.personalFileId
+        let personalFileId = req.userId
         let allProject = await project.findAll({where:{personalFileId: personalFileId}});
         return res.status(200).json(allProject);
     }
@@ -250,7 +268,7 @@ const getAllProject = async (req,res)=>{
 };
 const getAllCertificate = async (req,res)=>{
     try{
-        let personalFileId = req.body.personalFileId
+        let personalFileId = req.userId
         let allCertificate = await certificate.findAll({where:{personalFileId: personalFileId}});
         return res.status(200).json(allCertificate);
     }
@@ -261,7 +279,7 @@ const getAllCertificate = async (req,res)=>{
 };
 const getAllExperience = async (req,res)=>{
     try{
-        let personalFileId = req.body.personalFileId
+        let personalFileId = req.userId
         let allExperience = await experience.findAll({where:{personalFileId: personalFileId}});
         return res.status(200).json(allExperience);
     }
@@ -273,7 +291,7 @@ const getAllExperience = async (req,res)=>{
 
 const getSkill = async (req, res) => {
     try {
-        let skillUser = await personalFile.findByPk(req.body.id,{
+        let skillUser = await personalFile.findByPk(req.userId,{
             include: [{
                 model: skill,
                 through: { attributes: [] },
@@ -290,7 +308,7 @@ const getSkill = async (req, res) => {
 
 const getOneEducation = async (req,res) => {
     try{
-        let id = req.body.id
+        let id = req.userId
         const getOneEducation = await study.findOne({where:{id:id}})
         if(!getOneEducation){
             res.status(404).json({error:"detail not found"})
@@ -305,7 +323,7 @@ const getOneEducation = async (req,res) => {
 }
 const getOneProject = async (req,res) => {
     try{
-        let id = req.body.id
+        let id = req.userId
         const getOneProject = await project.findOne({where:{id:id}})
         if(!getOneProject){
             res.status(404).json({error:"detail not found"})
@@ -320,7 +338,7 @@ const getOneProject = async (req,res) => {
 }
 const getOneExperience = async (req,res) => {
     try{
-        let id = req.body.id
+        let id = req.userId
         const getOneExperience = await experience.findOne({where:{id:id}})
         if(!getOneExperience){
             res.status(404).json({error:"detail not found"})
@@ -350,7 +368,7 @@ const getOneCertificate = async (req,res) => {
 }
 const getUserInfor = async (req, res) => {
     try{
-        let id = req.body.id;
+        let id = req.userId;
         const getInfor = await personalFile.findOne({where: {id: id}});
         if (!getInfor){
              return res.status(404).json({error: "detail not found"})   
@@ -375,6 +393,7 @@ module.exports = {
     updateExperience,
     updateProject,
     updateUserInfor,
+    updateSkill,
 
     deleteEducation,
     deleteCertificate,

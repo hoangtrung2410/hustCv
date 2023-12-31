@@ -42,9 +42,9 @@ const isJobSeeker = async (req, res, next) => {
         if (process.env.SERVER_JWT === "false") return next()
         console.log(">>>>>>>token <<<<<<<<<");
         const token = JwtService.jwtGetToken(req)
-        console.log("Received Token in Middleware:", token);
+        // console.log("Received Token in Middleware:", token);
         const decoded = JwtService.jwtVerify(token);
-        console.log("Decoded Token in Middleware:", decoded);
+        // console.log("Decoded Token in Middleware:", decoded);
         if (!decoded.roleId) {
             return res.status(403).json("You need sign in")
         }

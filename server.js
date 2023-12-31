@@ -39,6 +39,7 @@ const cvRouter = require('./src/routers/cvRouter.js');
 const adminRouter = require('./src/routers/adminRouter.js');
 const userInfor = require('./src/routers/profileRouter/userInforRouter.js')
 const skillProfile = require('./src/routers/profileRouter/skillProfileRouter.js')
+const jobPreference = require('./src/routers/criterionJobRouter.js')
 
 const roleRouter = require('./src/routers/roleRouter.js');
 const recruiterApplicationRouter = require('./src/routers/recruiterApplicationRouter.js');
@@ -57,6 +58,7 @@ app.use('/api/profile/experiencce', experienceRouter);
 app.use('/api/profile/userInfor', userInfor);
 app.use('/api/profile/skill', skillProfile)
 app.use('/api/manageCv', cvRouter);
+app.use('/api/jobPreference', jobPreference);
 
 
 app.use('/api/roles', roleRouter);
