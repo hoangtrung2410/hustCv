@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+require('express-async-handler')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const db = require("./src/models/index.js")

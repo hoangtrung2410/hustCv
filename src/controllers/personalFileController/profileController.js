@@ -46,11 +46,15 @@ catch(error){
 
 const addCertificate = async (req, res) => {
     try {
+        if (!req.body.name) {
+            return res.status(400).json({error: "Bad request"});
+        }
         const info = {
             name: req.body.name,
             personalFileId: req.body.personalFileId
         };
-        await certificate.create(info);
+        const newCertificate = await certificate.create(info);
+        return res.status(201).json(newCertificate)
     }
 catch(error){
         console.error(error);
@@ -126,7 +130,12 @@ const updateProject = async (req, res) => {
 const updateCertificate = async (req, res) => {
     try {
         const id = req.params.id;
+        const certificateInfo = await certificate.findOne({where: {id: id}})
+        if (!certificateInfo){
+            return res.status(404).json({error: "not found"})
+        }
         await certificate.update(req.body, {where:{id:id}});
+        return res.status(201).json('update complete')
     } catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -191,8 +200,13 @@ const deleteProject = async (req, res) => {
 
 const deleteCertificate = async (req, res) => {
     try {
-        const id = req.body.id;
-        await certificate.destroy(req.body, {where:{id:id}});
+        const id = req.params.id;
+        const certificateInfo = await certificate.findOne({where: {id: id}})
+        if (!certificateInfo){
+            return res.status(404).json({error: "not found"})
+        }
+        await certificate.destroy({where:{id:id}});
+        return res.status(200).json("delete successfull")
     }
     catch(error) {
         console.error(error);
