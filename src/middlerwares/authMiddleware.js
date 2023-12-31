@@ -30,6 +30,7 @@ const isEmployer = async (req, res, next) => {
         if (decoded.roleId !== 1) {
             return res.status(401).json("You don't have employer")
         }
+        req.userId = decoded.userId
         return next()
     } catch (error) {
         next(new BadTokenError())
