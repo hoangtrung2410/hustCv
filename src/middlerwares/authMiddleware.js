@@ -28,7 +28,7 @@ const isEmployer = async (req, res, next) => {
             return res.status(403).json("You need sign in")
         }
         if (decoded.roleId !== 1) {
-            return res.status(401).json("You don't have employer")
+            return res.status(403).json("You don't have employer")
         }
         req.userId = decoded.userId;
         return next()
@@ -49,7 +49,7 @@ const isJobSeeker = async (req, res, next) => {
             return res.status(403).json("You need sign in")
         }
         if (decoded.roleId !== 2) {
-            return res.status(401).json("You don't have job seekers")
+            return res.status(403).json("You don't have job seekers")
         }
         req.userId = decoded.userId;
         return next()
