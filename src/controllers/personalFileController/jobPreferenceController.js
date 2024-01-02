@@ -1,6 +1,7 @@
 const db = require('../../models');
 
 const criterionJob = db.criterionJob
+const Skill = db.skill
 
 const addCriterionJob = async (req, res) => {
     try {
@@ -13,14 +14,14 @@ const addCriterionJob = async (req, res) => {
             jobLevel: req.body.jobLevel,
             address: req.body.address,
         };
-        const userCriterion = criterionJob.findOne({where: {user_id: req.userId}});
+        const userCriterion = await criterionJob.findOne({where: {user_id: req.userId}});
         if (userCriterion){
             await criterionJob.destroy({where: {user_id: req.userId}});
         }
         const newCriterionJob = await criterionJob.create(infor);
-        await req.body.skill?.map( async (item) => {
-            newCriterionJob.addSkill(item);
-        })
+        await Promise.all(req.body.skill?.map(async (item) => {
+            await newCriterionJob.addSkill(item);
+        }));
         return res.status(201).json(newCriterionJob)
     }
     catch(err) {
@@ -34,7 +35,7 @@ const updateCriterionJob = async (req, res) => {
         if (!req.body) {
             return res.status(400).json({ error: "Bad request: Missing request body" });
         }
-        const criterion = criterionJob.findOne({where: {user_id: req.userId}})
+        const criterion = await criterionJob.findOne({where: {user_id: req.userId}})
         const infor = {
             salary: req.body.salary,
             jobLevel: req.body.jobLevel,
@@ -50,7 +51,21 @@ const updateCriterionJob = async (req, res) => {
 }
 
 const getCriterionJob = async (req, res) => {
-
+    try {
+        const criterion = await criterionJob.findOne({where: {user_id: req.userId}})
+        let job = await criterionJob.findByPk(criterion.id, {
+            include: [{
+                model: Skill,
+                through: { attributes: [] },
+                attributes: ['id', 'name'],
+            }]
+        })
+        res.status(200).json(job)
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).json({ error: "Internal Server Error" })
+    }
 }
 
 module.exports = {

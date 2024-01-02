@@ -2,7 +2,7 @@ const profileController = require("../controllers/personalFileController/jobPref
 const authMidleware = require("../middlerwares/authMiddleware")
 const router = require('express').Router()
 
-router.post('/get',authMidleware.isJobSeeker, profileController.getCriterionJob)
+router.get('/getAll',authMidleware.isJobSeeker, profileController.getCriterionJob)
 router.post('/add',authMidleware.isJobSeeker, profileController.addCriterionJob)
 
 module.exports = router

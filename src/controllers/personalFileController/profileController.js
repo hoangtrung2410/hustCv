@@ -20,7 +20,7 @@ const addEducation = async (req, res) => {
         const newEducation = await study.create(info);
         return res.status(201).json(newEducation);
     }
-catch(error){
+    catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -38,7 +38,7 @@ const addProject = async (req, res) => {
         const newProject = await project.create(info);
         return res.status(201).json(newProject);
     }
-catch(error){
+    catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -56,7 +56,7 @@ const addCertificate = async (req, res) => {
         const newCertificate = await certificate.create(info);
         return res.status(201).json(newCertificate)
     }
-catch(error){
+    catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -70,7 +70,7 @@ const addExperience = async (req, res) => {
         };
         await experience.create(info);
     }
-catch(error){
+    catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -93,7 +93,8 @@ const addSkill = async (req, res) => {
         return res.status(201).json(user)
     }
     catch (error) {
-
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 }
 
