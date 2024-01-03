@@ -17,6 +17,8 @@ const addRecruitmentPost = async (req, res) => {
             form: req.body.form,
             salary: req.body.salary,
             dateClose: req.body.dateClose,
+            location: req.body.location,
+            level: req.body.level
         };
         const recruitmentPost = await RecruitmentPost.create(info);
         await req.body.skill?.map(async (item) => {
