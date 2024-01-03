@@ -2,12 +2,14 @@ const db = require('../models')
 // create main Model
 const RecruitmentPost = db.recruitmentPost
 const Skill = db.skill
+const User = db.user
 
 const addRecruitmentPost = async (req, res) => {
     try {
         if (!req.body) {
             return res.status(400).json({ error: "Bad request: Missing request body" });
         }
+        const user = await User.findOne({ where: { id: req.userId } })
         const info = {
             title: req.body.title,
             describe: req.body.describe,
@@ -20,6 +22,8 @@ const addRecruitmentPost = async (req, res) => {
         await req.body.skill?.map(async (item) => {
             await recruitmentPost.addSkill(item)
         })
+
+        await user.addRecruitmentPost(recruitmentPost)
 
         return res.status(201).json(recruitmentPost);
     } catch (error) {
@@ -46,15 +50,24 @@ const updateRecruitmentPost = async (req, res) => {
 
 const getAllRecruitmentPost = async (req, res) => {
     try {
+        const user = req.user
         let recruitmentPosts = await RecruitmentPost.findAll({
+            where: { user_id: req.userId },
             order: [['createdAt', 'DESC']],
             include: [{
                 model: Skill,
                 through: { attributes: [] },
                 attributes: ['id', 'name'],
-            }]
+            }, {
+                model: User,
+                attributes: ['username'],
+            }],
         })
-        res.status(200).json(recruitmentPosts)
+        const count = await RecruitmentPost.count({ where: { user_id: req.userId } })
+        res.status(200).json({
+            count: count,
+            data: recruitmentPosts
+        })
     }
     catch (error) {
         console.log(error)
