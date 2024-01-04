@@ -31,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(100),
         }
     }, {
-
         timestamps: true
     })
 

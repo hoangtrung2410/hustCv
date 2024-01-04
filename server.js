@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+require('express-async-handler')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 
@@ -36,28 +37,32 @@ const experienceRouter = require('./src/routers/profileRouter/experienceRouter.j
 const certificateRouter = require('./src/routers/profileRouter/certificateRouter.js');
 const cvRouter = require('./src/routers/cvRouter.js');
 const adminRouter = require('./src/routers/adminRouter.js');
-
+const userInfor = require('./src/routers/profileRouter/userInforRouter.js')
+const skillProfile = require('./src/routers/profileRouter/skillProfileRouter.js')
 
 const roleRouter = require('./src/routers/roleRouter.js');
-
+const recruiterApplicationRouter = require('./src/routers/recruiterApplicationRouter.js');
 
 // Routes
 app.use('/api/recruitmentPosts', recruitmentPostRouter);
 app.use('/api/business', businessRouter);
 app.use('/api/users', userRouter);
-app.use('/api/auths', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/skills', skillRouter)
 
 app.use('/api/profile/certificate', certificateRouter);
 app.use('/api/profile/education', educationRouter);
 app.use('/api/profile/project', projectRouter);
 app.use('/api/profile/experiencce', experienceRouter);
+app.use('/api/profile/userInfor', userInfor);
+app.use('/api/profile/skill', skillProfile)
 app.use('/api/manageCv', cvRouter);
 
 
 app.use('/api/roles', roleRouter);
 app.use('/api/admin',adminRouter)
 
+app.use('/api/recruiterApplication', recruiterApplicationRouter);
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

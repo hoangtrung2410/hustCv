@@ -8,8 +8,6 @@ const personalFile = db.personalFile;
 
 const signUp = async (req, res) => {
     try {
-
-
         const schema = Yup.object().shape({
             username: Yup.string().required(),
             email: Yup.string().email().required(),
@@ -37,8 +35,8 @@ const signUp = async (req, res) => {
         if (existingUser) {
             console.log("existingUser", existingUser.id);
             return res.status(401).json({
-                    status: false,
-                }
+                  status: false,
+              }
             );
         }
         console.log("role_id", role_id)
@@ -95,8 +93,24 @@ const getAllUser = async (req, res) => {
     }
 };
 
+
+// moi nguoi lay user theo id tuong tu
+const getUserById = async (req, res) => {
+    try {
+        const id = req.userId;
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({error: 'User not found'});
+        }
+        return res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({error: 'Internal Server Error'});
+    }
+}
 module.exports = {
     signUp,
     updateUser,
     getAllUser,
+    getUserById
 };
