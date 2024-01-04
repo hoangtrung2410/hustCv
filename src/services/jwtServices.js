@@ -29,7 +29,6 @@ const JwtService = {
                 console.log("[JWT] JWT flag is not set");
                 throw new Error("[JWT] JWT flag is not set");
             }
-            console.log(">>>>>>>>>1");
             // console.log(request?.headers);
             if (!request?.headers?.authorization || !request?.headers?.authorization?.startsWith("Bearer ")) {
                 console.log("[JWT] JWT token not provided or invalid format");
