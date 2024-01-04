@@ -5,8 +5,8 @@ const personalFile = db.personalFile
 
 const client = new S3Client({
     credentials: {
-      accessKeyId: 'AKIA5SZVMOPVFEH7JJXK',
-      secretAccessKey: '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'
+      accessKeyId: process.env.ACCESS_KEY,
+      secretAccessKey: process.env.SECRET_KEY
     },
     region: 'ap-southeast-2'
 });
@@ -47,7 +47,6 @@ const deleteCv2 = async (data) => {
 
 const addCv = async (req, res) => {
     // const key = `${req.userId}.pdf`;
-    console.log('hellooooooooooooooooooooooooo')
     const user = await personalFile.findOne({where: {id: req.userId}});
     const id = req.userId;
     const key = Date.now() + '-' + Math.round(Math.random() * 1E9) + '-' + req.file.originalname;
