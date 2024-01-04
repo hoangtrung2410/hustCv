@@ -12,8 +12,8 @@ const certificate = db.certificate;
 const makeResume = async (req, res) => {
     try {
         // const id = req.userId;
-        const id = 5;
-        const userSkill = await personalFile.findByPk(req.userId,{
+        const id = 20;
+        const userInfor = await personalFile.findByPk(id,{
             include: [{
                 model: skill,
                 through: { attributes: [] },
@@ -24,9 +24,13 @@ const makeResume = async (req, res) => {
         const userProject = await project.findAll({where: {personalFileId: id}});
         const userCertificate = await certificate.findAll({where: {personalFileId: id}});
         const userExperience = await experience.findAll({where: {personalFileId: id}});
-        const userProfile = await personalFile.findAll({where: {id: id}});
         const infor = {
-            
+            profile: userInfor.profile,
+            education: userStudy,
+            experience: userExperience,
+            skill: userInfor.skills,
+            project: userProject,
+            certificate: userCertificate
         };
         pdf.create(dynamicResume(infor)).toBuffer((error, buffer) => {
             if (error) {
@@ -117,16 +121,16 @@ const dynamicResume= (infor)=>{
     <body>
     
       <header>
-        <h1>LE VAN MINH</h1>
+        <h1>${infor.profile?.split('*/')[0].toUpperCase()}</h1>
       </header>
     
       <div class="container">
         <div class="section">
-          <h2>Contact Information</h2>
-          <p>Email: your.email@example.com</p>
-          <p>Phone: (123) 456-7890</p>
-          <p>LinkedIn: linkedin.com/in/yourname</p>
-          <p>GitHub: github.com/yourusername</p>
+          <h2>Thông tin liên hệ</h2>
+          <p>Email: ${infor.profile?.split('*/')[1]}</p>
+          <p>Số điện thoại: ${infor.profile?.split('*/')[3]}</p>
+          <p>Giới tính: ${infor.profile?.split('*/')[4]}</p>
+          <p>Ngày sinh: ${infor.profile?.split('*/')[2].split('T')[0]}</p>
         </div>
     
         <div class="section">
@@ -135,28 +139,58 @@ const dynamicResume= (infor)=>{
             and scalable solutions.</p>
         </div>
     
-        <div class="section experience">
-          <h2>Work Experience</h2>
+        <div class="section education">
+          <h2>Học vấn</h2>
           <ul>
-            <li>
-              <h3>Web Developer</h3>
-              <p>ABC Company - City, Country - January 2020 to Present</p>
-              <p>Developed and maintained company websites using HTML, CSS, and JavaScript.</p>
-            </li>
-            <!-- Add more work experience entries as needed -->
+            ${infor.education?.map((value) => `
+              <li>
+                <h3>Trường: ${value.name.split('*/')[0]}</h3>
+                <p>Ngành: ${value.name.split('*/')[1]}</p>
+                <p>${value.name.split('*/')[2].split('-')[1]}/${value.name.split('*/')[2].split('-')[0]} - ${value.name.split('*/')[3] == 'Hiện tại' ? 'Hiện tại' : `${value.name.split('*/')[3].split('-')[1]}/${value.name.split('*/')[3].split('-')[0]}`}</p>
+              </li>
+            `).join('')}
           </ul>
         </div>
     
-        <div class="section education">
-          <h2>Education</h2>
+        <div class="section experience">
+          <h2>Kinh nghiệm làm việc</h2>
           <ul>
-            <li>
-              <h3>Bachelor of Science in Computer Science</h3>
-              <p>University Name - City, Country - Graduated May 2019</p>
-            </li>
-            <!-- Add more education entries as needed -->
+            ${infor.experience?.map((value) => `
+              <li>
+                <h3>Công ty: ${value.name.split('*/')[0]}</h3>
+                <p>Chức vụ: ${value.name.split('*/')[1]}</p>
+                <p>${value.name.split('*/')[2].split('-')[1]}/${value.name.split('*/')[2].split('-')[0]} - ${value.name.split('*/')[3] == 'Hiện tại' ? 'Hiện tại' : `${value.name.split('*/')[3].split('-')[1]}/${value.name.split('*/')[3].split('-')[0]}`}</p>
+              </li>
+            `).join('')}
           </ul>
         </div>
+        <div class="section skill">
+          <h2>Kỹ năng</h2>
+          <p>${infor.skill?.map((value) => {return ' ' + value.name})}</p>
+      </div>
+      <div class="section project">
+        <h2>Dự án</h2>
+        <ul>
+          ${infor.project?.map((value) => `
+            <li>
+              <h3>Tên dự án: ${value.name.split('*/')[0]}</h3>
+              <p>${value.name.split('*/')[1].split('-')[1]}/${value.name.split('*/')[1].split('-')[0]} - ${value.name.split('*/')[2] == 'Hiện tại' ? 'Hiện tại' : `${value.name.split('*/')[2].split('-')[1]}/${value.name.split('*/')[2].split('-')[0]}`}</p>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+      <div class="section certificate">
+        <h2>Chứng chỉ</h2>
+          <ul>
+            ${infor.certificate?.map((value) => `
+              <li>
+                <h3>Tên chứng chỉ: ${value.name.split('*/')[0]}</h3>
+                <p>Tổ chức: ${value.name.split('*/')[1]}</p>
+                <p>${value.name.split('*/')[2].split('-')[1]}/${value.name.split('*/')[2].split('-')[0]}</p>
+              </li>
+            `).join('')}
+          </ul>
+      </div>
       </div>
     
     </body>
