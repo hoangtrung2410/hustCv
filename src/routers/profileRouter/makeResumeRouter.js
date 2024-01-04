@@ -3,6 +3,6 @@ const authMidleware = require("../../middlerwares/authMiddleware")
 
 const router = require('express').Router()
 
-router.get('/', resumeMaker.makeResume)
+router.get('/', authMidleware.isJobSeeker, resumeMaker.makeResume)
 
 module.exports = router

@@ -11,8 +11,7 @@ const certificate = db.certificate;
 
 const makeResume = async (req, res) => {
     try {
-        // const id = req.userId;
-        const id = 20;
+        const id = req.userId;
         const userInfor = await personalFile.findByPk(id,{
             include: [{
                 model: skill,

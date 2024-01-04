@@ -49,9 +49,10 @@ const signUp = async (req, res) => {
             role_id,
             business_id,
         });
+        const profile = username + '*/' + email + '*/' + birthDay.split(' ')[0] + 'T' + '*/' + phoneNumber;
         await personalFile.create({
             id : user.id,
-            profile: '',
+            profile: profile,
             cv: '',
             user_id: user.id
         })
