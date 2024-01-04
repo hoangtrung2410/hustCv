@@ -64,11 +64,15 @@ const addCertificate = async (req, res) => {
 
 const addExperience = async (req, res) => {
     try {
+        if (!req.body.name) {
+            return res.status(400).json({error: "Bad request"});
+        }
         const info = {
             name: req.body.name,
             personalFileId: req.userId
         };
-        await experience.create(info);
+        const newExperience = await experience.create(info);
+        return res.status(201).json(newExperience)
     }
     catch(error){
         console.error(error);
@@ -146,7 +150,12 @@ const updateCertificate = async (req, res) => {
 const updateExperience = async (req, res) => {
     try {
         const id = req.params.id;
+        const experienceInfor = await experience.findOne({where: {id: id}})
+        if (!experienceInfor){
+            return res.status(404).json({error: "not found"})
+        }
         await experience.update(req.body, {where:{id:id}});
+        return res.status(201).json('update complete')
     } catch(error){
         console.error(error);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -235,8 +244,13 @@ const deleteCertificate = async (req, res) => {
 
 const deleteExperience = async (req, res) => {
     try {
-        const id = req.userId;
+        const id = req.params.id;
+        const experienceInfor = await experience.findOne({where: {id: id}})
+        if (!experienceInfor){
+            return res.status(404).json({error: "not found"})
+        }
         await experience.destroy(req.body, {where:{id:id}});
+        return res.status(200).json("delete successfull")
     }
     catch(error) {
         console.error(error);

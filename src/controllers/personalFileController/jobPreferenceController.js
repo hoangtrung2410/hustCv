@@ -52,7 +52,10 @@ const updateCriterionJob = async (req, res) => {
 
 const getCriterionJob = async (req, res) => {
     try {
-        const criterion = await criterionJob.findOne({where: {user_id: req.userId}})
+        let criterion = await criterionJob.findOne({where: {user_id: req.userId}})
+        if (!criterion) {
+            criterion = await criterionJob.create({user_id: req.userId});
+        }
         let job = await criterionJob.findByPk(criterion.id, {
             include: [{
                 model: Skill,
