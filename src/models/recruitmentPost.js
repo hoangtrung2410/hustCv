@@ -30,9 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         level: {
             type: DataTypes.STRING(100),
         }
-
     }, {
-
         timestamps: true
     })
 

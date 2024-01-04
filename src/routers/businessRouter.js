@@ -3,7 +3,7 @@ const authMiddlerware = require("../middlerwares/authMiddleware.js")
 
 const router = require('express').Router()
 
-router.get('/', authMiddlerware.isEmployer, businessController.getAllBusiness)
+router.get('/', businessController.getAllBusiness)
 router.get('/:id', businessController.getOneBusiness)
 router.post('/', businessController.addBusiness)
 router.put('/:id', businessController.updateBusiness)
