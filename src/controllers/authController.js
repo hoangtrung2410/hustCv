@@ -30,7 +30,6 @@ const login = async (req, res) => {
             return res.status(400).json({
                   statusCode: 400,
                   message: "Bad Request",
-                  error: e.errors
               }
             );
         }
