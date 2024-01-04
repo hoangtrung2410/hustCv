@@ -1,5 +1,5 @@
 module.exports = {
-    accessKeyId: 'AKIA5SZVMOPVGP7JDI6F',
-    secretAccessKey: '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',
+    accessKeyId: 'AKIA5SZVMOPVFEH7JJXK',
+    secretAccessKey: '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',
     region: 'ap-southeast-2'
 }
