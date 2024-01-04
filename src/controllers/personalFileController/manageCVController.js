@@ -30,9 +30,9 @@ const deleteCv2 = async (data) => {
 }
 
 const addCv = async (req, res) => {
-    // const key = `${req.body.id}.pdf`;
-    const user = await personalFile.findOne({where: {id: req.body.id}});
-    const id = req.body.id;
+    // const key = `${req.userId}.pdf`;
+    const user = await personalFile.findOne({where: {id: req.userId}});
+    const id = req.userId;
     const key = Date.now() + '-' + Math.round(Math.random() * 1E9) + '-' + req.file.originalname;
     const fileContent = req.file.buffer;
 
@@ -67,7 +67,7 @@ const addCv = async (req, res) => {
 
 const getUrlCv = async (req, res) => {
     try{
-        const id = req.body.id;
+        const id = req.userId;
         const user = await personalFile.findOne({where: {id: id}});
         const fileName = user.cv
         if (fileName != ''){
@@ -91,7 +91,7 @@ const getUrlCv = async (req, res) => {
 
 const getNameCv = async (req, res) => {
     try {
-        const id = req.body.id;
+        const id = req.userId;
         const user = await personalFile.findOne({where: {id: id}});
         if (user.cv == ''){
             res.status(201).json({name: ''});
