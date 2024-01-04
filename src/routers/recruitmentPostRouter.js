@@ -7,5 +7,6 @@ router.get('/:id',recruitmentPostController.getOneRecruitmentPost)
 router.post('/',recruitmentPostController.addRecruitmentPost)
 router.put('/:id',recruitmentPostController.updateRecruitmentPost)
 router.delete('/:id',recruitmentPostController.deleteRecruitmentPost)
+router.post('/search', recruitmentPostController.searchRecruitmentPost);
 
 module.exports = router
