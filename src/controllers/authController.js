@@ -82,7 +82,6 @@ const login = async (req, res) => {
         return res.status(500).json({
             statusCode: 500,
             message: 'Internal Server Error',
-            error: e.errors
         });
     }
 };
@@ -107,11 +106,9 @@ const refreshToken = async (req, res) => {
         return res.status(500).json({
             statusCode: 500,
             message: 'Internal Server Error',
-            error: e.errors
         });
     }
 }
-
 const logout = async (req, res) => {
     try {
         JwtService.jwtBlacklistToken(JwtService.jwtGetToken(req));
@@ -124,7 +121,6 @@ const logout = async (req, res) => {
         return res.status(500).json({
             statusCode: 500,
             message: 'Internal Server Error',
-            error: e.errors
         });
     }
 };
@@ -149,7 +145,7 @@ const forgotPassword = async (req, res) => {
             return res.status(400).json({
                   statusCode: 400,
                   message: "Bad Request",
-                  error: e.errors
+
               }
             );
         }
@@ -182,7 +178,7 @@ const forgotPassword = async (req, res) => {
         console.log("user da luu ");
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
         console.log("passwordCode:", passwordCode);
-        const html = `Chúc mừng bạn đến với GoodBody, đây là mã code của bạn: ${verificationCode}. Mã này sẽ hết hạn trong 15 phút.`;
+        const html = `Chúc mừng bạn đến với HustCV, đây là mã code của bạn: ${verificationCode}. Mã này sẽ hết hạn trong 15 phút.`;
         const text = {
             email,
             html
@@ -198,7 +194,6 @@ const forgotPassword = async (req, res) => {
         return res.status(500).json({
             statusCode: 500,
             message: 'Internal Server Error',
-            error: e.errors
         })
     }
 }
@@ -215,7 +210,6 @@ const checkCode = async (req, res) => {
             return res.status(400).json({
                 statusCode: 400,
                 message: "Bad Request",
-                error: e.errors,
             });
         }
         console.log("verificationCode");
@@ -253,7 +247,6 @@ const checkCode = async (req, res) => {
         return res.status(500).json({
             statusCode: 500,
             message: "Internal Server Error",
-            error: e.errors
         });
     }
 };
@@ -271,7 +264,6 @@ const resetPassword = async (req, res) => {
             return res.status(400).json({
                   statusCode: 400,
                   message: "Bad Request",
-                  error: e.errors
               }
             );
         }
@@ -301,7 +293,6 @@ const resetPassword = async (req, res) => {
         return res.status(500).json({
             statusCode: 500,
             message: 'Internal Server Error',
-            error: e.errors
         })
     }
 };
