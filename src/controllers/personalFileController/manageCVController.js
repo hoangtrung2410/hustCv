@@ -1,17 +1,33 @@
 const db = require('../../models')
 const s3 = require('../../models/CV.js')
-const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3")
+const { S3Client, DeleteObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3")
 const personalFile = db.personalFile
 
 const client = new S3Client({
     credentials: {
-      accessKeyId: 'AKIA5SZVMOPVDBF6JQKD',
-      secretAccessKey: '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'
+      accessKeyId: 'AKIA5SZVMOPVFEH7JJXK',
+      secretAccessKey: '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'
     },
     region: 'ap-southeast-2'
 });
 const bucketName = 'hustcv-1';
 
+const deleteCv = async (req, res) => {
+    const key = req.body.key;
+    const command = new DeleteObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+    });
+    
+    try {
+        const response = await client.send(command);
+        res.send('oke')
+        console.log('xoa hoan tat')
+    } catch (err) {
+        console.error(err);
+        console.log('loi xoa')
+    }
+}
 
 const deleteCv2 = async (data) => {
     const key = data;
@@ -31,6 +47,7 @@ const deleteCv2 = async (data) => {
 
 const addCv = async (req, res) => {
     // const key = `${req.userId}.pdf`;
+    console.log('hellooooooooooooooooooooooooo')
     const user = await personalFile.findOne({where: {id: req.userId}});
     const id = req.userId;
     const key = Date.now() + '-' + Math.round(Math.random() * 1E9) + '-' + req.file.originalname;
@@ -107,6 +124,6 @@ const getNameCv = async (req, res) => {
 module.exports = {
     addCv,
     getUrlCv,
-    deleteCv2,
+    deleteCv,
     getNameCv,
 }

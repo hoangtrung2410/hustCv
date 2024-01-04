@@ -7,7 +7,7 @@ const router = require('express').Router()
 router.post('/getUrlCv', authMidleware.isJobSeeker, manageCvController.getUrlCv)
 router.post('/getNameCv', authMidleware.isJobSeeker, manageCvController.getNameCv)
 router.post('/', authMidleware.isJobSeeker, upload.single('file'), manageCvController.addCv)
-router.delete('/', authMidleware.isJobSeeker, manageCvController.deleteCv2)
+router.delete('/', authMidleware.isJobSeeker, manageCvController.deleteCv)
 // router.delete('/', manageCvController.deleteCv)
 
 module.exports = router
