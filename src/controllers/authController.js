@@ -6,6 +6,8 @@ const Yup = require('yup');
 const JwtService = require("../services/jwtServices.js");
 const {BadRequestError, UnauthorizedError, ValidationError} = require("../utils/apiError.js");
 const sendMail = require('../middlerwares/sendMail.js')
+
+
 const login = async (req, res) => {
     try {
         const schema = Yup.object().shape({
@@ -21,8 +23,6 @@ const login = async (req, res) => {
             ),
             password: Yup.string().required(),
         });
-        console.log(">>>>>>1")
-
         try {
             await schema.validate(req.body);
         } catch (e) {
@@ -34,7 +34,11 @@ const login = async (req, res) => {
             );
         }
         let {email, password} = req.body;
-        const user = await User.findOne({where: {email}});
+        const user = await User.findOne({
+            where: {
+                email: email
+            },
+        });
         if (!user) {
             return res.status(401).json({
                 statusCode: 401,
@@ -50,8 +54,7 @@ const login = async (req, res) => {
                 error: 'Invalid password.'
             });
         }
-        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-10s"});
-        console.log("Generated Access Token:", accessToken);
+        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-20s"});
         const millisecondsInOneDay = 24 * 60 * 60 * 1000;
         const checkDate = Date.now() - user.timeCreateRefreshToken;
         let refreshToken = user.refreshToken;
@@ -71,7 +74,6 @@ const login = async (req, res) => {
             refreshToken,
             userData
         };
-
         return res.status(200).json({
             statusCode: 200,
             message: "OK",
@@ -87,6 +89,7 @@ const login = async (req, res) => {
 const refreshToken = async (req, res) => {
     try {
         const refreshToken = req?.body?.refreshToken
+        console.log("refreshToken: " + refreshToken)
         if (!refreshToken)
             return res.status(401).json({
                 statusCode: 401,
@@ -110,8 +113,9 @@ const refreshToken = async (req, res) => {
 }
 const logout = async (req, res) => {
     try {
-        JwtService.jwtBlacklistToken(JwtService.jwtGetToken(req));
-        console.log(">>>>>>2 " + JwtService.jwtGetToken(req))
+        console.log(">>>>>>Yen " + req.userId)
+        // JwtService.jwtBlacklistToken(JwtService.jwtGetToken(req));
+        // console.log(">>>>>>2 " + JwtService.jwtGetToken(req))
         return res.status(200).json({
             statusCode: 200,
             message: 'Logout successful'
@@ -149,7 +153,6 @@ const forgotPassword = async (req, res) => {
             );
         }
         let {email} = req.body;
-
         const user = await User.findOne({
             where: {
                 [Op.or]: [
@@ -167,16 +170,9 @@ const forgotPassword = async (req, res) => {
                 error: 'User does not exist'
             });
         }
-        console.log("user có tồn tai");
         const verificationCode = await user.createPasswordChangedToken()
-        console.log("code da luu chua");
-        console.log("code:", verificationCode);
         await user.save();
-        resetUserId = user.id;
-        console.log(">>>>>>!>>>>>!>>>>1>" + resetUserId)
-        console.log("user da luu ");
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
-        console.log("passwordCode:", passwordCode);
         const html = `Chúc mừng bạn đến với HustCV, đây là mã code của bạn: ${verificationCode}. Mã này sẽ hết hạn trong 15 phút.`;
         const text = {
             email,
@@ -196,24 +192,23 @@ const forgotPassword = async (req, res) => {
         })
     }
 }
+const schema = Yup.object().shape({
+    email: Yup.string().required(),
+    verificationCode: Yup.number().required(),
+});
 const checkCode = async (req, res) => {
     try {
-        const schema = Yup.object().shape({
-            email: Yup.string().required(),
-            verificationCode: Yup.number().required(),
-        });
+
         try {
             await schema.validate(req.body);
         } catch (e) {
-            console.error(e);
             return res.status(400).json({
                 statusCode: 400,
                 message: "Bad Request",
+                error : e.errors
             });
         }
-        console.log("verificationCode");
         const {email, verificationCode} = req.body;
-        console.log("code:", verificationCode);
         const hashedVerificationCode = crypto
           .createHash("sha256")
           .update(verificationCode.toString())
@@ -234,13 +229,11 @@ const checkCode = async (req, res) => {
                 statusCode: 400,
                 message: "Bad Request",
             });
-
         res.status(200).json({
             statusCode: 200,
             message: "OK",
             notification: "Valid code",
         });
-
     } catch (e) {
         console.error(e);
         return res.status(500).json({

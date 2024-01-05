@@ -6,7 +6,6 @@ const authMiddleware = async (req, res, next) => {
     try {
         if (process.env.SERVER_JWT === "false") return next();
         const token = JwtService.jwtGetToken(req);
-
         const decoded = JwtService.jwtVerify(token);
         req.userId = decoded.userId;
         return next();
