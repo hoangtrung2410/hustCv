@@ -36,7 +36,8 @@ const login = async (req, res) => {
         let {email, password} = req.body;
         const user = await User.findOne({
             where: {
-                email: email
+                email: email,
+                status: true
             },
         });
         if (!user) {
