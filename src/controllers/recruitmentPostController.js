@@ -11,6 +11,7 @@ const addRecruitmentPost = async (req, res) => {
         if (!req.body) {
             return res.status(400).json({ error: "Bad request: Missing request body" });
         }
+        console.log('>>> check req.body: ', req.userId)
         const user = await User.findOne({ where: { id: req.userId } })
         const info = {
             title: req.body.title,
