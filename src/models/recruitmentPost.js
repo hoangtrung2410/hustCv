@@ -24,9 +24,13 @@ module.exports = (sequelize, DataTypes) => {
         dateClose: {
             type: DataTypes.DATE,
         },
-
+        location: {
+            type: DataTypes.STRING(100),
+        },
+        level: {
+            type: DataTypes.STRING(100),
+        }
     }, {
-
         timestamps: true
     })
 

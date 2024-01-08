@@ -18,10 +18,12 @@ const signUp = async (req, res) => {
             business_id: Yup.number().nullable(),
         });
 
-        try {
-            await schema.validate(req.body);
-        } catch (e) {
-            return res.status(400).json({error: 'Invalid input', message: e.message});
+        if(!(await schema.isValid(req.body))){
+            return res.status(400).json({
+                statusCode: 400,
+                message: "Bad Request",
+                error: "Invalid data"
+            });
         }
         let {username, email, password, phoneNumber, birthDay, role_id, business_id} = req.body;
         const existingUser = await User.findOne({
@@ -33,13 +35,12 @@ const signUp = async (req, res) => {
         });
 
         if (existingUser) {
-            console.log("existingUser", existingUser.id);
             return res.status(401).json({
-                  status: false,
+                  status: 401,
+                  message: "Email already exists",
               }
             );
         }
-        console.log("role_id", role_id)
         const user = await User.create({
             username,
             email,
@@ -49,19 +50,18 @@ const signUp = async (req, res) => {
             role_id,
             business_id,
         });
+        const profile = username + '*/' + email + '*/' + birthDay.split(' ')[0] + 'T' + '*/' + phoneNumber;
         await personalFile.create({
             id : user.id,
-            profile: '',
+            profile: profile,
             cv: '',
             user_id: user.id
         })
         return res.status(201).json({user});
     } catch (error) {
-        console.error('Error:', error);
         return res.status(500).json({error: 'Internal Server Error'});
     }
 };
-
 
 const updateUser = async (req, res) => {
     try {

@@ -30,15 +30,17 @@ const businessRouter = require('./src/routers/businessRouter.js');
 const userRouter = require('./src/routers/userRouter.js');
 const authRouter = require('./src/routers/authRouter.js');
 const skillRouter = require('./src/routers/skillRouter.js')
-
+const manageApplicationRouter = require('./src/routers/manageApplicationRouter.js');
 const educationRouter = require('./src/routers/profileRouter/educationRouter.js');
 const projectRouter = require('./src/routers/profileRouter/projectRouter.js');
 const experienceRouter = require('./src/routers/profileRouter/experienceRouter.js');
 const certificateRouter = require('./src/routers/profileRouter/certificateRouter.js');
+const makeResumeRouter = require('./src/routers/profileRouter/makeResumeRouter.js');
 const cvRouter = require('./src/routers/cvRouter.js');
 const adminRouter = require('./src/routers/adminRouter.js');
 const userInfor = require('./src/routers/profileRouter/userInforRouter.js')
 const skillProfile = require('./src/routers/profileRouter/skillProfileRouter.js')
+const jobPreference = require('./src/routers/criterionJobRouter.js')
 
 const roleRouter = require('./src/routers/roleRouter.js');
 const recruiterApplicationRouter = require('./src/routers/recruiterApplicationRouter.js');
@@ -53,11 +55,13 @@ app.use('/api/skills', skillRouter)
 app.use('/api/profile/certificate', certificateRouter);
 app.use('/api/profile/education', educationRouter);
 app.use('/api/profile/project', projectRouter);
-app.use('/api/profile/experiencce', experienceRouter);
+app.use('/api/profile/experience', experienceRouter);
 app.use('/api/profile/userInfor', userInfor);
 app.use('/api/profile/skill', skillProfile)
+app.use('/api/profile/makeCV', makeResumeRouter);
 app.use('/api/manageCv', cvRouter);
-
+app.use('/api/jobPreference', jobPreference);
+app.use('/api/manageApplication', manageApplicationRouter);
 
 app.use('/api/roles', roleRouter);
 app.use('/api/admin',adminRouter)

@@ -1,13 +1,18 @@
 const db = require('../models')
+const { Op } = require("sequelize");
+
 // create main Model
 const RecruitmentPost = db.recruitmentPost
 const Skill = db.skill
+const User = db.user
 
 const addRecruitmentPost = async (req, res) => {
     try {
         if (!req.body) {
             return res.status(400).json({ error: "Bad request: Missing request body" });
         }
+        console.log('>>> check req.body: ', req.userId)
+        const user = await User.findOne({ where: { id: req.userId } })
         const info = {
             title: req.body.title,
             describe: req.body.describe,
@@ -15,11 +20,16 @@ const addRecruitmentPost = async (req, res) => {
             form: req.body.form,
             salary: req.body.salary,
             dateClose: req.body.dateClose,
+            location: req.body.location,
+            level: req.body.level,
+
         };
         const recruitmentPost = await RecruitmentPost.create(info);
         await req.body.skill?.map(async (item) => {
             await recruitmentPost.addSkill(item)
         })
+
+        await user.addRecruitmentPost(recruitmentPost)
 
         return res.status(201).json(recruitmentPost);
     } catch (error) {
@@ -46,15 +56,24 @@ const updateRecruitmentPost = async (req, res) => {
 
 const getAllRecruitmentPost = async (req, res) => {
     try {
+        const user = req.user
         let recruitmentPosts = await RecruitmentPost.findAll({
+            where: { user_id: req.userId },
             order: [['createdAt', 'DESC']],
             include: [{
                 model: Skill,
                 through: { attributes: [] },
                 attributes: ['id', 'name'],
-            }]
+            }, {
+                model: User,
+                attributes: ['username'],
+            }],
         })
-        res.status(200).json(recruitmentPosts)
+        const count = await RecruitmentPost.count({ where: { user_id: req.userId } })
+        res.status(200).json({
+            count: count,
+            data: recruitmentPosts
+        })
     }
     catch (error) {
         console.log(error)
@@ -64,20 +83,28 @@ const getAllRecruitmentPost = async (req, res) => {
 // get one user
 const getOneRecruitmentPost = async (req, res) => {
     try {
-        let id = req.params.id
-        const recruitmentPost = await RecruitmentPost.findOne({ where: { id: id } })
-        if (!recruitmentPost) {
-            res.status(404).json({ error: "RecruitmentPost not found" })
-            return;
-        }
-        res.status(200).json(recruitmentPost)
+      let id = req.params.id;
+      const recruitmentPost = await RecruitmentPost.findOne({
+        where: { id: id },
+        include: [
+          {
+            model: Skill,
+            through: { attributes: [] },
+            attributes: ["id", "name"],
+          },
+        ],
+      });
+      if (!recruitmentPost) {
+        res.status(404).json({ error: "RecruitmentPost not found" });
+        return;
+      }
+      res.status(200).json(recruitmentPost);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-    catch (error) {
-        console.log(error)
-        res.status(500).json({ error: "Internal Server Error" })
+  };
 
-    }
-}
 const deleteRecruitmentPost = async (req, res) => {
     try {
         let id = req.params.id
@@ -95,12 +122,41 @@ const deleteRecruitmentPost = async (req, res) => {
     }
 }
 // update user
+
+//search
+const searchRecruitmentPost = async (req, res) => {
+    const { value } = req.body;
+    try {
+      let recruitmentPosts = await RecruitmentPost.findAll({
+        where: {
+          [Op.or]: [
+            { title: { [Op.like]: `%${value}%` } },
+            { describe: { [Op.like]: `%${value}%` } },
+          ],
+        },
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: Skill,
+            through: { attributes: [] },
+            attributes: ["id", "name"],
+            where: { name: { [Op.like]: `%${value}%` } },
+          },
+        ],
+      });
+      res.status(200).json(recruitmentPosts);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
 module.exports = {
     addRecruitmentPost,
     updateRecruitmentPost,
     getAllRecruitmentPost,
     getOneRecruitmentPost,
-    deleteRecruitmentPost
-
+    deleteRecruitmentPost,
+    searchRecruitmentPost
 }
 
