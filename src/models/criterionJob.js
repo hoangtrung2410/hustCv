@@ -6,7 +6,7 @@ module.exports=(sequelize,DataTypes)=>{
             autoIncrement:true,
         },
         salary:{
-            type:DataTypes.STRING,
+            type:DataTypes.TEXT,
         },
         jobLevel:{
             type:DataTypes.STRING
