@@ -36,7 +36,6 @@ const JwtService = {
                 console.log("[JWT] JWT token not provided or invalid format");
                 throw new Error("[JWT] JWT token not provided or invalid format");
             }
-
             const token = request.headers.authorization.split(" ")[1];
             return token;
         } catch (error) {
@@ -44,6 +43,33 @@ const JwtService = {
             throw error;
         }
     },
+    // jwtVerify: (token) => {
+    //     try {
+    //         if (process.env.SERVER_JWT !== "true")
+    //             new Error("[JWT] JWT flag is not setted");
+    //
+    //         return jwt.verify(
+    //           token,
+    //           process.env.SERVER_JWT_SECRET,
+    //           (err, decoded) => {
+    //               blacklist.forEach((element) => {
+    //                   if (
+    //                     element.jti === decoded.jti &&
+    //                     element.iat === decoded.iat &&
+    //                     element.exp === decoded.exp
+    //                   )
+    //                       new err;
+    //               });
+    //
+    //               if (err != null) throw err;
+    //               return decoded.payload;
+    //           }
+    //         );
+    //     } catch (error) {
+    //         console.log("[JWT] Error getting JWT token");
+    //         return error;
+    //     }
+    // },
 
     jwtVerify: (token) => {
         try {

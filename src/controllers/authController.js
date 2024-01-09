@@ -108,9 +108,7 @@ const refreshToken = async (req, res) => {
 }
 const logout = async (req, res) => {
     try {
-        console.log(">>>>>>Yen " + req.userId)
         // JwtService.jwtBlacklistToken(JwtService.jwtGetToken(req));
-        // console.log(">>>>>>2 " + JwtService.jwtGetToken(req))
         return res.status(200).json({
             statusCode: 200,
             message: 'Logout successful'

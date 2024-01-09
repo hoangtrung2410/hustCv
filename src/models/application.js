@@ -5,6 +5,10 @@ module.exports = (sequelize,DataTypes) =>{
             primaryKey: true,
             autoIncrement: true
         },
+        context:{
+            type: DataTypes.STRING,
+            required: true,
+        },
         CV:{
             type :DataTypes.STRING,
         },
