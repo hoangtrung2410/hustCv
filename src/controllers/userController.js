@@ -52,7 +52,7 @@ const signUp = async (req, res) => {
             business_id,
         });
         console.log("existingUser: ");
-        const profile = username + '*/' + email + '*/' + birthDay.split(' ')[0] + 'T' + '*/' + phoneNumber;
+        const profile = username + '*/' + email + '*/' + birthDay + '*/' + phoneNumber;
         await personalFile.create({
             id : user.id,
             profile: profile,
