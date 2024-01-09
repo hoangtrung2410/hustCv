@@ -23,15 +23,11 @@ const login = async (req, res) => {
             ),
             password: Yup.string().required(),
         });
-        try {
-            await schema.validate(req.body);
-        } catch (e) {
-            console.error(e)
+        if(!(await schema.isValid(req.body))){
             return res.status(400).json({
                   statusCode: 400,
-                  message: "Bad Request",
-              }
-            );
+                  message: "Xin vui lòng điền đầy đủ thông tin",
+        })
         }
         let {email, password} = req.body;
         const user = await User.findOne({
@@ -41,18 +37,16 @@ const login = async (req, res) => {
             },
         });
         if (!user) {
-            return res.status(401).json({
-                statusCode: 401,
-                message: "Unauthorized",
-                error: 'User does not exist'
+            return res.status(400).json({
+                statusCode: 400,
+                message: "Tài khoản không tồn tại",
             });
         }
         const isPasswordValid = await user.checkPassword(password);
         if (!isPasswordValid) {
             return res.status(401).json({
                 statusCode: 401,
-                message: "Unauthorized",
-                error: 'Invalid password.'
+                message: " 'Email hoặc mật khẩu không đúng'",
             });
         }
         const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-20s"});
@@ -168,7 +162,7 @@ const forgotPassword = async (req, res) => {
             return res.status(401).json({
                 statusCode: 401,
                 message: "Unauthorized",
-                error: 'User does not exist'
+                error: 'Email không tồn tại'
             });
         }
         const verificationCode = await user.createPasswordChangedToken()
