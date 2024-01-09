@@ -31,12 +31,11 @@ sequelize.authenticate()
 const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-
-db.sequelize.sync()
-    .then(() => {
-        console.log('yes re-sync done!')
-    })
-
+// tự đông ụp date các trường
+db.sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('yes re-sync done!');
+  });
 
 // Importing models
 db.admin = require('./admin.js')(sequelize, DataTypes)
