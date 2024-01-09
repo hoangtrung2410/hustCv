@@ -12,7 +12,7 @@ const signUp = async (req, res) => {
             username: Yup.string().required(),
             email: Yup.string().email().required(),
             password: Yup.string().required().min(8),
-            phoneNumber: Yup.string().required().matches(/^\d{10}$/),
+            phoneNumber: Yup.string().required(),
             birthDay: Yup.string().required(),
             role_id: Yup.number().required(),
             business_id: Yup.number().nullable(),
@@ -25,6 +25,7 @@ const signUp = async (req, res) => {
                 error: "Invalid data"
             });
         }
+        console.log(req.body)
         let {username, email, password, phoneNumber, birthDay, role_id, business_id} = req.body;
         const existingUser = await User.findOne({
             where: {
@@ -33,7 +34,6 @@ const signUp = async (req, res) => {
                 ],
             },
         });
-
         if (existingUser) {
             return res.status(401).json({
                   status: 401,
@@ -41,6 +41,7 @@ const signUp = async (req, res) => {
               }
             );
         }
+
         const user = await User.create({
             username,
             email,
@@ -50,6 +51,7 @@ const signUp = async (req, res) => {
             role_id,
             business_id,
         });
+        console.log("existingUser: ");
         const profile = username + '*/' + email + '*/' + birthDay.split(' ')[0] + 'T' + '*/' + phoneNumber;
         await personalFile.create({
             id : user.id,
