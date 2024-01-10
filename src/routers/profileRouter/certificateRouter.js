@@ -2,7 +2,7 @@ const profileController = require("../../controllers/personalFileController/prof
 const authMidleware = require("../../middlerwares/authMiddleware")
 const router = require('express').Router()
 
-router.post('/getAll',authMidleware.isJobSeeker, profileController.getAllCertificate)
+router.get('/getAll',authMidleware.isJobSeeker, profileController.getAllCertificate)
 router.get('/:id',authMidleware.isJobSeeker, profileController.getOneCertificate)
 router.post('/add',authMidleware.isJobSeeker, profileController.addCertificate)
 router.put('/:id',authMidleware.isJobSeeker, profileController.updateCertificate)
