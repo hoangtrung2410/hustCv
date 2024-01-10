@@ -1,4 +1,5 @@
 const recruitmentPostController = require("../controllers/recruitmentPostController")
+const applicationController = require("../controllers/applicationController")
 const authMiddleware = require("../middlerwares/authMiddleware.js")
 
 
@@ -10,7 +11,8 @@ router.get('/:id',recruitmentPostController.getOneRecruitmentPost)
 router.post('/',recruitmentPostController.addRecruitmentPost)
 router.put('/:id',recruitmentPostController.updateRecruitmentPost)
 router.delete('/:id',recruitmentPostController.deleteRecruitmentPost)
-router.post('/search', recruitmentPostController.searchRecruitmentPost);
+router.post('/search', recruitmentPostController.searchRecruitmentPost)
+router.post("/apply", applicationController.createApplication)
 
 // router.get('/', authMiddleware.authMiddleware, recruitmentPostController.getAllRecruitmentPost)
 // router.get('/:id', authMiddleware.authMiddleware, recruitmentPostController.getOneRecruitmentPost)
