@@ -13,6 +13,8 @@ const router = require('express').Router()
 // router.delete('/:id',recruitmentPostController.deleteRecruitmentPost)
 router.post('/search', recruitmentPostController.searchRecruitmentPost)
 router.post("/apply", applicationController.createApplication)
+router.get('/getAll', recruitmentPostController.getAllPost)
+router.get('/khanh/:id', recruitmentPostController.getOneRecruitmentPost)
 
 router.get('/', authMiddleware.authMiddleware, recruitmentPostController.getAllRecruitmentPost)
 router.get('/:id', authMiddleware.authMiddleware, recruitmentPostController.getOneRecruitmentPost)

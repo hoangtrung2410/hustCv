@@ -125,6 +125,7 @@ const deleteRecruitmentPost = async (req, res) => {
 
 //search
 const searchRecruitmentPost = async (req, res) => {
+  console.log('henho')
     const { value } = req.body;
     try {
       let recruitmentPosts = await RecruitmentPost.findAll({
@@ -151,12 +152,35 @@ const searchRecruitmentPost = async (req, res) => {
     }
   };
 
+  const getAllPost = async (req, res) => {
+    try {
+        let recruitmentPosts = await RecruitmentPost.findAll({
+            order: [['createdAt', 'DESC']],
+            include: [{
+                model: Skill,
+                through: { attributes: [] },
+                attributes: ['id', 'name'],
+            }, {
+                model: User,
+                attributes: ['username'],
+            }],
+        })
+        // const count = await RecruitmentPost.count()
+        res.status(200).json(recruitmentPosts)
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
 module.exports = {
     addRecruitmentPost,
     updateRecruitmentPost,
     getAllRecruitmentPost,
     getOneRecruitmentPost,
     deleteRecruitmentPost,
-    searchRecruitmentPost
+    searchRecruitmentPost,
+    getAllPost
 }
 
