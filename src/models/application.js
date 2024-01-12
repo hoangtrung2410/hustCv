@@ -11,7 +11,7 @@ module.exports = (sequelize,DataTypes) =>{
         CV:{
             type :DataTypes.STRING,
         },
-        recuritmentPost_id: {
+        recruitmentPost_id: {
             type: DataTypes.INTEGER,
         },
         status:{
