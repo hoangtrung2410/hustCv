@@ -33,9 +33,15 @@ const login = async (req, res) => {
         const user = await User.findOne({
             where: {
                 email: email,
-                status: true
+
             },
         });
+        if(user.status === false){
+            return res.status(403).json({
+                statusCode: 403,
+                message: "Tài khoản đã bị khóa",
+            });
+        }
         if (!user) {
             return res.status(400).json({
                 statusCode: 400,
@@ -148,11 +154,16 @@ const forgotPassword = async (req, res) => {
                 [Op.or]: [
                     {
                         email: email,
-                        status: true
                     },
                 ],
             },
         });
+        if(user.status === false){
+            return res.status(403).json({
+                statusCode: 403,
+                message: "Tài khoản đã bị khóa",
+            });
+        }
         if (!user) {
             return res.status(401).json({
                 statusCode: 401,

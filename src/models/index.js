@@ -32,7 +32,7 @@ const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
 
-db.sequelize.sync({ force: false })
+db.sequelize.sync({ alter: false })
     .then(() => {
         console.log('yes re-sync done!')
     })
