@@ -52,7 +52,7 @@ const signUp = async (req, res) => {
             business_id,
         });
         console.log("existingUser: ");
-        const profile = username + '*/' + email + '*/' + birthDay.split(' ')[0] + 'T' + '*/' + phoneNumber;
+        const profile = username + '*/' + email + '*/' + birthDay + '*/' + phoneNumber;
         await personalFile.create({
             id : user.id,
             profile: profile,
@@ -61,7 +61,7 @@ const signUp = async (req, res) => {
         })
         return res.status(201).json({user});
     } catch (error) {
-        return res.status(500).json({error: 'Internal Server Error'});
+        throw new Error(error)
     }
 };
 

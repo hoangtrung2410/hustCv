@@ -31,11 +31,13 @@ sequelize.authenticate()
 const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-// tự đông ụp date các trường
-db.sequelize.sync({ alter: true })
-  .then(() => {
-    console.log('yes re-sync done!');
-  });
+
+
+db.sequelize.sync({ force: false })
+    .then(() => {
+        console.log('yes re-sync done!')
+    })
+
 
 // Importing models
 db.admin = require('./admin.js')(sequelize, DataTypes)
@@ -83,12 +85,12 @@ db.role.hasMany(db.user, { foreignKey: 'role_id', onUpdate: 'cascade', onDelete:
 // Recruitment Post belongs to many Skills through 'post_skill'
 db.recruitmentPost.hasMany(db.application, { foreignKey: 'recruitmentPost_id', onUpdate: 'cascade', onDelete: 'cascade' })
 db.recruitmentPost.belongsTo(db.user, { foreignKey: 'user_id', onUpdate: 'cascade', onDelete: 'cascade' })
-db.recruitmentPost.belongsToMany(db.skill, { through: 'post_skill' })
+db.recruitmentPost.belongsToMany(db.skill, { through: 'post_skill', onUpdate: 'cascade', onDelete: 'cascade' })
 
 // Skill
 // Skill belongs to many Recruitment Posts through 'post_skill'
 // Skill belongs to many Criterion Jobs through 'skill_criterion'
-db.skill.belongsToMany(db.recruitmentPost, { through: 'post_skill' })
+db.skill.belongsToMany(db.recruitmentPost, { through: 'post_skill', onUpdate: 'cascade', onDelete: 'cascade' })
 db.skill.belongsToMany(db.criterionJob, { through: 'skill_criterion' })
 
 // Criterion Job
