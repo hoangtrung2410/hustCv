@@ -4,8 +4,8 @@ const multer = require('multer');
 const upload = multer();
 const router = require('express').Router()
 
-router.post('/getUrlCv', authMidleware.isJobSeeker, manageCvController.getUrlCv)
-router.post('/getNameCv', authMidleware.isJobSeeker, manageCvController.getNameCv)
+router.get('/getUrlCv', authMidleware.isJobSeeker, manageCvController.getUrlCv)
+router.get('/getNameCv', authMidleware.isJobSeeker, manageCvController.getNameCv)
 router.post('/', authMidleware.isJobSeeker, upload.single('file'), manageCvController.addCv)
 router.delete('/', authMidleware.isJobSeeker, manageCvController.deleteCv)
 // router.delete('/', manageCvController.deleteCv)
