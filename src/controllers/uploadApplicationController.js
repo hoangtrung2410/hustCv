@@ -21,7 +21,8 @@ const uploadApplication = async (req, res) => {
     const postId = req.body.recruitmentPost_id;
     const content = req.body.content;
     const key = req.body.CV?.split('/')[2];
-    const filePath = req.filePath;
+    const filePath = req.body.CV;
+    console.log('>>>>>>>>>>>>', req.body)
 
     const infor = {
         CV: key,
