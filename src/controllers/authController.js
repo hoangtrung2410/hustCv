@@ -156,7 +156,7 @@ const forgotPassword = async (req, res) => {
         const verificationCode = await user.createPasswordChangedToken()
         await user.save();
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
-        const html = `Chúc mừng bạn đến với HustCV, đây là mã code của bạn: ${verificationCode}. Mã này sẽ hết hạn trong 5 phút.`;
+        const html = `Chào mừng bạn đến với HustCV, đây là mã code để khôi phục mật khẩu : ${verificationCode}. Mã này sẽ hết hạn trong 5 phút.`;
         const text = {
             email,
             html
