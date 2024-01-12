@@ -11,16 +11,7 @@ const sendMail = require('../middlerwares/sendMail.js')
 const login = async (req, res) => {
     try {
         const schema = Yup.object().shape({
-            email: Yup.string().email().required().test(
-              'is-gmail',
-              'Email must be a Gmail address',
-              (value) => {
-                  if (value) {
-                      return value.endsWith('@gmail.com');
-                  }
-                  return false;
-              }
-            ),
+            email: Yup.string().email().required(),
             password: Yup.string().required(),
         });
         if(!(await schema.isValid(req.body))){
