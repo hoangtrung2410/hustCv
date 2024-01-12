@@ -155,7 +155,7 @@ const getUserByUsername = async (req, res) => {
     try {
       const user = await User.findAll({ where: { username } });
   
-      if (user) {
+      if (user.length) {
         res.status(200).json(user);
       } else {
         res.status(404).json({ message: 'User not found' });
@@ -173,7 +173,7 @@ const getUserByEmail = async (req, res) => {
     try {
       const user = await User.findAll({ where: { email } });
   
-      if (user) {
+      if (user.length) {
         res.status(200).json(user);
       } else {
         res.status  (404).json({ message: 'User not found' });
@@ -190,7 +190,7 @@ const getUserByPhoneNumber = async (req, res) => {
     try {
       const user = await User.findAll({ where: { phoneNumber } });
   
-      if (user) {
+      if (user.length) {
         res.status(200).json(user);
       } else {
         res.status(404).json({ message: 'User not found' });
