@@ -62,7 +62,6 @@ const login = async (req, res) => {
         } else {
             console.log("Duration is not greater than 6 days");
         }
-        console.log("refreshToken" + refreshToken)
         const {password: hashedPassword, ...userData} = user.get();
         const resBody = {
             accessToken,
@@ -85,7 +84,6 @@ const refreshToken = async (req, res) => {
     try {
         console.log("refreshToken: " + refreshToken)
         const refreshToken = req?.body?.refreshToken
-
         if (!refreshToken)
             return res.status(401).json({
                 statusCode: 401,
