@@ -40,8 +40,13 @@ const getAllApplications = async (req, res) => {
             })
         }
         const AllApplications = await Application.findAll({
-            include: {model: db.user, attributes: ["username", "email", "phoneNumber"]}
-        })
+            include: [
+                {
+                    model: RecruitmentPost,
+                    attributes: ['title', 'describe','level','location','salary'],
+                },
+            ],
+        });
         return res.status(200).json({
             data: AllApplications
         })
