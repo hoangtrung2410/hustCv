@@ -49,7 +49,7 @@ const login = async (req, res) => {
                 message: " 'Email hoặc mật khẩu không đúng'",
             });
         }
-        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-20s"});
+        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-10s"});
         const millisecondsInOneDay = 24 * 60 * 60 * 1000;
         const checkDate = Date.now() - user.timeCreateRefreshToken;
         let refreshToken = user.refreshToken;
@@ -62,7 +62,6 @@ const login = async (req, res) => {
         } else {
             console.log("Duration is not greater than 6 days");
         }
-        console.log("refreshToken" + refreshToken)
         const {password: hashedPassword, ...userData} = user.get();
         const resBody = {
             accessToken,
@@ -83,8 +82,8 @@ const login = async (req, res) => {
 };
 const refreshToken = async (req, res) => {
     try {
-        const refreshToken = req?.body?.refreshToken
         console.log("refreshToken: " + refreshToken)
+        const refreshToken = req?.body?.refreshToken
         if (!refreshToken)
             return res.status(401).json({
                 statusCode: 401,
@@ -166,7 +165,7 @@ const forgotPassword = async (req, res) => {
         const verificationCode = await user.createPasswordChangedToken()
         await user.save();
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
-        const html = `Chúc mừng bạn đến với HustCV, đây là mã code của bạn: ${verificationCode}. Mã này sẽ hết hạn trong 15 phút.`;
+        const html = `Chúc mừng bạn đến với HustCV, đây là mã code của bạn: ${verificationCode}. Mã này sẽ hết hạn trong 5 phút.`;
         const text = {
             email,
             html

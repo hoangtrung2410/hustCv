@@ -47,7 +47,6 @@ const JwtService = {
     //     try {
     //         if (process.env.SERVER_JWT !== "true")
     //             new Error("[JWT] JWT flag is not setted");
-    //
     //         return jwt.verify(
     //           token,
     //           process.env.SERVER_JWT_SECRET,
@@ -60,17 +59,15 @@ const JwtService = {
     //                   )
     //                       new err;
     //               });
-    //
     //               if (err != null) throw err;
     //               return decoded.payload;
     //           }
     //         );
     //     } catch (error) {
-    //         console.log("[JWT] Error getting JWT token");
+    //         console.log(error.message);
     //         return error;
     //     }
     // },
-
     jwtVerify: (token) => {
         try {
             if (process.env.SERVER_JWT !== "true")

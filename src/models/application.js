@@ -5,7 +5,7 @@ module.exports = (sequelize,DataTypes) =>{
             primaryKey: true,
             autoIncrement: true
         },
-        context:{
+        content:{
             type: DataTypes.STRING,
             required: true,
         },
