@@ -83,7 +83,7 @@ exports.getAcceptedApplications = async (req, res) => {
         // get all accepted applications 
         const acceptedApplications = await db.application.findAll({
             where: {
-                status: "ACCEPTED",
+                status: "Đã chấp nhận",
                 recruitmentPost_id: postId,
             },
             include: {model: db.user, attributes: ["username", "email", "phoneNumber"]}
@@ -129,7 +129,7 @@ exports.getPendingApplications = async (req, res) => {
         // get all accepted applications 
         const acceptedApplications = await db.application.findAll({
             where: {
-                status: "PENDING",
+                status: "Đang chờ",
                 recruitmentPost_id: postId,
             },
             include: {model: db.user, attributes: ["username", "email", "phoneNumber"]}
@@ -161,7 +161,7 @@ exports.getDetailedApplication = async (req, res) => {
         const application = await db.application.findOne({
             where: {
                 id: applicationId,
-                status: "PENDING"
+                status: "Đang chờ"
             },
             include: [{model: db.user, attributes: ["username", "email", "phoneNumber"]}]
         })
@@ -229,7 +229,7 @@ exports.putAcceptApplication = async (req, res) => {
             })
         }
         // accept application
-        await db.application.update({status: "ACCEPTED"}, {
+        await db.application.update({status: "Đã chấp nhận"}, {
             where: {
                 id: applicationId,
             }
@@ -275,7 +275,7 @@ exports.putDeclineApplication = async (req, res) => {
             })
         }
         // accept application
-        await db.application.update({status: "DECLINED"}, {
+        await db.application.update({status: "Bị từ chối"}, {
             where: {
                 id: applicationId,
             }
@@ -307,7 +307,7 @@ exports.getAcceptedDetailedApplication = async (req, res) => {
         const application = await db.application.findOne({
             where: {
                 id: applicationId,
-                status: "ACCEPTED"
+                status: "Đã chấp nhận"
             },
             include: [{model: db.user, attributes: ["username", "email", "phoneNumber"]}]
         })
