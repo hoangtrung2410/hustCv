@@ -99,16 +99,17 @@ const getAllUser = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const id = req.userId;
-        const user = await User.findByPk(id);
-        if (!user) {
+        const user1 = await User.findByPk(id);
+        if (!user1) {
             return res.status(404).json({error: 'User not found'});
         }
-        if(user.status === false){
+        if(user1.status === false){
             return res.status(403).json({
                 statusCode: 403,
                 message: "Tài khoản đã bị khóa",
             });
         }
+        const {password: hashedPassword, ...user} = user1.get();
         return res.status(200).json(user);
     } catch (error) {
         console.error(error);
