@@ -117,16 +117,7 @@ const logout = async (req, res) => {
 const forgotPassword = async (req, res) => {
     try {
         const schema = Yup.object().shape({
-            email: Yup.string().email().required().test(
-              'is-gmail',
-              'Email must be a Gmail address',
-              (value) => {
-                  if (value) {
-                      return value.endsWith('@gmail.com');
-                  }
-                  return false;
-              }
-            ),
+            email: Yup.string().email().required()
         });
         try {
             await schema.validate(req.body);
