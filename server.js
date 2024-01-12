@@ -101,7 +101,7 @@ app.post("/api/application/create-pdf", authMidleware.isJobSeeker, upload.single
     const pdfBytes = await pdfDoc.save();
     const filePath = `public/cv/${title}`;
     fs.writeFileSync(filePath, pdfBytes); // Ghi tệp PDF
-    res.json({ message: "PDF created successfully", pdfPath: filePath });
+    res.status(200).json({ message: "PDF created successfully", pdfPath: filePath });
   } catch (error) {
     console.error("Error handling PDF:", error);
     res.status(500).json({ error: "Error handling PDF" });
