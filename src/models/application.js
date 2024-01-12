@@ -5,12 +5,14 @@ module.exports = (sequelize,DataTypes) =>{
             primaryKey: true,
             autoIncrement: true
         },
-        context:{
+        content:{
             type: DataTypes.STRING,
-            required: true,
         },
         CV:{
             type :DataTypes.STRING,
+        },
+        recruitmentPost_id: {
+            type: DataTypes.INTEGER,
         },
         status:{
             type : DataTypes.STRING,

@@ -4,8 +4,15 @@ require('dotenv').config();
 require('express-async-handler')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
+const { PDFDocument } = require("pdf-lib");
+const PDFParser = require('pdf-parse');
+const multer = require("multer");
+const fs = require("fs");
+const path = require('path');
+const authMidleware = require("./src/middlerwares/authMiddleware.js")
 
 const app = express();
+app.use('/public/cv', express.static(path.join(__dirname, 'public/cv')));
 
 const allowCrossDomain = (req, res, next) => {
     res.header(`Access-Control-Allow-Origin`, `*`);
@@ -45,6 +52,8 @@ const jobPreference = require('./src/routers/criterionJobRouter.js')
 const roleRouter = require('./src/routers/roleRouter.js');
 const recruiterApplicationRouter = require('./src/routers/recruiterApplicationRouter.js');
 
+const uploadApplicationRouter = require('./src/routers/uploadApplicationRouter.js');
+
 // Routes
 app.use('/api/recruitmentPosts', recruitmentPostRouter);
 app.use('/api/business', businessRouter);
@@ -64,9 +73,40 @@ app.use('/api/jobPreference', jobPreference);
 app.use('/api/manageApplication', manageApplicationRouter);
 
 app.use('/api/roles', roleRouter);
-app.use('/api/admin',adminRouter)
+app.use('/api/admin',adminRouter);
 
 app.use('/api/recruiterApplication', recruiterApplicationRouter);
+
+app.use('/api/application', uploadApplicationRouter);
+
+const upload = multer({ dest: "uploads/" }); // Thư mục lưu trữ tạm thời cho tệp tin
+app.post("/api/application/create-pdf", authMidleware.isJobSeeker, upload.single("file"), async (req, res) => {
+  const getTitleFromPDF = async (buffer) => {
+    try {
+      const data = await PDFParser(buffer);
+      const title = Date.now() + '-' + Math.round(Math.random() * 1E9) + '-' + req.file?.originalname;
+      return title;
+    } catch (error) {
+      console.error("Error reading PDF metadata:", error);
+      throw error;
+    }
+  };
+  try {
+    const { path } = req.file; // Đường dẫn tạm thời tới tệp tin đã tải lên
+    // Decode dữ liệu base64
+    const buffer = fs.readFileSync(path); // Đọc tệp tin vào buffer
+    fs.unlinkSync(path); // Xoá tệp tin tạm thời
+    const title = await getTitleFromPDF(buffer); // Lấy tiêu đề từ tệp PDF
+    const pdfDoc = await PDFDocument.load(buffer);
+    const pdfBytes = await pdfDoc.save();
+    const filePath = `public/cv/${title}`;
+    fs.writeFileSync(filePath, pdfBytes); // Ghi tệp PDF
+    res.status(200).json({ message: "PDF created successfully", pdfPath: filePath });
+  } catch (error) {
+    console.error("Error handling PDF:", error);
+    res.status(500).json({ error: "Error handling PDF" });
+  }
+});
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
