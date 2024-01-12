@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
             const code = crypto.randomInt(100000, 1000000);
             console.log("code = " + code);
             this.passwordCode = crypto.createHash('sha256').update(code.toString()).digest('hex');
-            this.codeResetExpires = Date.now() + 15 * 60 * 1000;
+            this.codeResetExpires = Date.now() + 5 * 60 * 1000;
             return code;
         } catch (error) {
             console.log(error);
