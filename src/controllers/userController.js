@@ -11,8 +11,16 @@ const signUp = async (req, res) => {
         const schema = Yup.object().shape({
             username: Yup.string().required(),
             email: Yup.string().email().required(),
-            password: Yup.string().required().min(8),
-            phoneNumber: Yup.string().required(),
+            // mật khẩu phải có ít nhất 8 ký tự, có chữ Hoa và chữ thường, số
+            password: Yup.string().required().min(8).matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+              "Mật khẩu phải có ít nhất 8 ký tự, có chữ Hoa và chữ thường, số"
+            ),
+            //phoneNumber phải có 10 số
+            phoneNumber: Yup.string().required().matches(
+              /(84|0[3|5|7|8|9])+([0-9]{8})\b/,
+              "Số điện thoại không hợp lệ"
+            ),
             birthDay: Yup.string().required(),
             role_id: Yup.number().required(),
             business_id: Yup.number().nullable(),
@@ -25,7 +33,6 @@ const signUp = async (req, res) => {
                 error: "Invalid data"
             });
         }
-        console.log(req.body)
         let {username, email, password, phoneNumber, birthDay, role_id, business_id} = req.body;
         const existingUser = await User.findOne({
             where: {
@@ -50,7 +57,6 @@ const signUp = async (req, res) => {
             role_id,
             business_id,
         });
-        console.log("existingUser: ");
         const profile = username + '*/' + email + '*/' + birthDay + '*/' + phoneNumber;
         await personalFile.create({
             id : user.id,
