@@ -228,7 +228,11 @@ const resetPassword = async (req, res) => {
     try {
         const schema = Yup.object().shape({
             email: Yup.string().required(),
-            newPassword: Yup.string().required().min(8),
+            // mật khẩu mới phải có ít nhất 8 ký tự có chữ Hoa và chữ thường, số
+            newPassword: Yup.string().required().matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+              "Mật khẩu phải có ít nhất 8 ký tự, có chữ Hoa và chữ thường, số"
+            ),
         });
         let {email, newPassword} = req.body
         try {
