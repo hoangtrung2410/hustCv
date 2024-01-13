@@ -138,7 +138,7 @@ const updatePassword = async(req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-const getAllUsers = async (req, res) => {
+const getRanDomUsers = async (req, res) => {
   try {
     // lấy random 20 user và tông cac user
     const users = await User.findAll(
@@ -147,8 +147,8 @@ const getAllUsers = async (req, res) => {
         limit: 20
       }
     );
-    let sum =users.length;
-    res.status(200).json(users,sum);
+    let sum = await User.count();
+    res.status(200).json({users,sum});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -295,7 +295,7 @@ module.exports={
   checkToken,
   updatePassword,
   verifyToken,
-  getAllUsers,
+  getRanDomUsers,
   getUserByUsername,
   getUserByEmail,
   getUserByPhoneNumber,
