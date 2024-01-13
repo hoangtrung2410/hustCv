@@ -14,7 +14,7 @@ router.put('/changePassword',adminsController.verifyToken,adminsController.updat
 
 router.put('/updateUser/:id',adminsController.verifyToken,adminsController.updateUser)
 
-router.get('/allUser',adminsController.verifyToken,adminsController.getRanDomUsers)
+router.get('/allUser',adminsController.verifyToken,adminsController.getAllUsers)
 
 router.post('/allUserByUsername',adminsController.verifyToken,adminsController.getUserByUsername)
 

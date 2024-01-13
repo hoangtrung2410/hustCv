@@ -155,6 +155,17 @@ const getRanDomUsers = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    let sum = await User.count();
+    res.status(200).json({users,sum});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 // Find user by username
 const getUserByUsername = async (req, res) => {
   const { username } = req.body;
@@ -303,5 +314,6 @@ module.exports={
   getUserByEmailAndUsername,
   getUserByUsernameAndPhoneNumber,
   getUserByEmailUsernameAndPhoneNumber,
-  updateUser
+  updateUser,
+  getAllUsers
 }
