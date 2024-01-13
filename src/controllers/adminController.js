@@ -140,8 +140,15 @@ const updatePassword = async(req, res) => {
 }
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
-    res.status(200).json(users);
+    // lấy random 20 user và tông cac user
+    const users = await User.findAll(
+      {
+        order: db.Sequelize.literal('rand()'),
+        limit: 20
+      }
+    );
+    let sum =users.length;
+    res.status(200).json(users,sum);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
