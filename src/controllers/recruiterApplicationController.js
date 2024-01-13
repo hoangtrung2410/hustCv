@@ -80,7 +80,7 @@ exports.getAcceptedApplications = async (req, res) => {
                 }
             )
         }
-        // get all accepted applications 
+        // get all accepted applications
         const acceptedApplications = await db.application.findAll({
             where: {
                 status: "Đã chấp nhận",

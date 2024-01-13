@@ -1,6 +1,5 @@
 const bucketConfig = require('../config/bucketConfig.js')
 const AWS = require('aws-sdk');
-
 AWS.config.update({
   accessKeyId: bucketConfig.accessKeyId,
   secretAccessKey: bucketConfig.secretAccessKey,
