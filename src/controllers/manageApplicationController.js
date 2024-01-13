@@ -3,17 +3,6 @@ const jwt = require("../services/jwtServices");
 const Application = db.application;
 const RecruitmentPost = db.recruitmentPost
 
-const getUserIdFromToken = (req) => {
-    const token = jwt.jwtGetToken(req);
-    if (!token) {
-        return null;
-    }
-    const payload = jwt.jwtVerify(token);
-    if (!payload.userId) {
-        return null;
-    }
-    return payload.userId;
-};
 
 const deleteApplication = async (req, res) => {
     try {
@@ -33,15 +22,16 @@ const deleteApplication = async (req, res) => {
 const getAllApplications = async (req, res) => {
     try {
         // get user id
-        const payload = getUserIdFromToken(req);
-        if (!payload){
-            return res.status(401).json({
-                message: "Log in first",
-            })
-        }
+        const id = req.userId;
         const AllApplications = await Application.findAll({
-            include: {model: db.user, attributes: ["username", "email", "phoneNumber"]}
-        })
+            where: {user_id: id},
+            include: [
+                {
+                    model: RecruitmentPost,
+                    attributes: ['title', 'describe','level','location','salary'],
+                },
+            ],
+        });
         return res.status(200).json({
             data: AllApplications
         })
@@ -56,8 +46,6 @@ const getAllApplications = async (req, res) => {
 const getApplicationDetails = async (req, res) => {
     try {
         const id = req.params.applicationId;
-        console.log("3435t4t = ",id)
-
         const application = await Application.findByPk(id)
         if (!application) {
             return res.status(404).json({ error: "Application not found" });

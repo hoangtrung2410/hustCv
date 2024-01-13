@@ -9,6 +9,7 @@ const PDFParser = require('pdf-parse');
 const multer = require("multer");
 const fs = require("fs");
 const path = require('path');
+const authMidleware = require("./src/middlerwares/authMiddleware.js")
 
 const app = express();
 app.use('/public/cv', express.static(path.join(__dirname, 'public/cv')));
@@ -79,6 +80,7 @@ app.use('/api/recruiterApplication', recruiterApplicationRouter);
 
 app.use('/api/application', uploadApplicationRouter);
 
+<<<<<<< HEAD
 // const upload = multer({ dest: "uploads/" });// Thư mục lưu trữ tạm thời cho tệp tin
 // app.post("/api/application/create-pdf", upload.single("file"), async (req, res) => {
 //   const getTitleFromPDF = async (buffer) => {
@@ -109,6 +111,36 @@ app.use('/api/application', uploadApplicationRouter);
 //     res.status(500).json({ error: "Error handling PDF" });
 //   }
 // });
+=======
+const upload = multer({ dest: "uploads/" }); // Thư mục lưu trữ tạm thời cho tệp tin
+app.post("/api/application/create-pdf", authMidleware.isJobSeeker, upload.single("file"), async (req, res) => {
+  const getTitleFromPDF = async (buffer) => {
+    try {
+      const data = await PDFParser(buffer);
+      const title = Date.now() + '-' + Math.round(Math.random() * 1E9) + '-' + req.file?.originalname;
+      return title;
+    } catch (error) {
+      console.error("Error reading PDF metadata:", error);
+      throw error;
+    }
+  };
+  try {
+    const { path } = req.file; // Đường dẫn tạm thời tới tệp tin đã tải lên
+    // Decode dữ liệu base64
+    const buffer = fs.readFileSync(path); // Đọc tệp tin vào buffer
+    fs.unlinkSync(path); // Xoá tệp tin tạm thời
+    const title = await getTitleFromPDF(buffer); // Lấy tiêu đề từ tệp PDF
+    const pdfDoc = await PDFDocument.load(buffer);
+    const pdfBytes = await pdfDoc.save();
+    const filePath = `public/cv/${title}`;
+    fs.writeFileSync(filePath, pdfBytes); // Ghi tệp PDF
+    res.status(200).json({ message: "PDF created successfully", pdfPath: filePath });
+  } catch (error) {
+    console.error("Error handling PDF:", error);
+    res.status(500).json({ error: "Error handling PDF" });
+  }
+});
+>>>>>>> eba9730e12f2737d8022ba410d9a0215b13bebe0
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

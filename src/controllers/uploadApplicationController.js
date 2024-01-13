@@ -1,6 +1,7 @@
 const { RDS } = require('aws-sdk');
 const db = require('../models')
 const s3 = require('../models/CV')
+const fs = require('fs');
 const { S3Client, DeleteObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3")
 
 

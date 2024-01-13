@@ -11,16 +11,7 @@ const sendMail = require('../middlerwares/sendMail.js')
 const login = async (req, res) => {
     try {
         const schema = Yup.object().shape({
-            email: Yup.string().email().required().test(
-              'is-gmail',
-              'Email must be a Gmail address',
-              (value) => {
-                  if (value) {
-                      return value.endsWith('@gmail.com');
-                  }
-                  return false;
-              }
-            ),
+            email: Yup.string().email().required(),
             password: Yup.string().required(),
         });
         if(!(await schema.isValid(req.body))){
@@ -33,9 +24,15 @@ const login = async (req, res) => {
         const user = await User.findOne({
             where: {
                 email: email,
-                status: true
+
             },
         });
+        if(user.status === false){
+            return res.status(403).json({
+                statusCode: 403,
+                message: "Tài khoản đã bị khóa",
+            });
+        }
         if (!user) {
             return res.status(400).json({
                 statusCode: 400,
@@ -62,7 +59,6 @@ const login = async (req, res) => {
         } else {
             console.log("Duration is not greater than 6 days");
         }
-        console.log("refreshToken" + refreshToken)
         const {password: hashedPassword, ...userData} = user.get();
         const resBody = {
             accessToken,
@@ -84,7 +80,6 @@ const login = async (req, res) => {
 const refreshToken = async (req, res) => {
     try {
         const refreshToken = req?.body?.refreshToken
-        console.log("refreshToken: " + refreshToken)
         if (!refreshToken)
             return res.status(401).json({
                 statusCode: 401,
@@ -92,9 +87,7 @@ const refreshToken = async (req, res) => {
                 error: 'Invalid password.'
             });
         const rs = await JwtService.jwtVerify(refreshToken)
-        console.log("rs:", rs)
         const response = await User.findOne({id: rs._id, refreshToken: refreshToken})
-        console.log("response:", response)
         return res.status(200).json({
             success: response ? true : false,
             accessToken: response ? JwtService.jwtSign(rs, {expiresIn: '1d'}) : null
@@ -123,16 +116,7 @@ const logout = async (req, res) => {
 const forgotPassword = async (req, res) => {
     try {
         const schema = Yup.object().shape({
-            email: Yup.string().email().required().test(
-              'is-gmail',
-              'Email must be a Gmail address',
-              (value) => {
-                  if (value) {
-                      return value.endsWith('@gmail.com');
-                  }
-                  return false;
-              }
-            ),
+            email: Yup.string().email().required()
         });
         try {
             await schema.validate(req.body);
@@ -151,11 +135,16 @@ const forgotPassword = async (req, res) => {
                 [Op.or]: [
                     {
                         email: email,
-                        status: true
                     },
                 ],
             },
         });
+        if(user.status === false){
+            return res.status(403).json({
+                statusCode: 403,
+                message: "Tài khoản đã bị khóa",
+            });
+        }
         if (!user) {
             return res.status(401).json({
                 statusCode: 401,
@@ -166,7 +155,7 @@ const forgotPassword = async (req, res) => {
         const verificationCode = await user.createPasswordChangedToken()
         await user.save();
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
-        const html = `Chúc mừng bạn đến với HustCV, đây là mã code của bạn: ${verificationCode}. Mã này sẽ hết hạn trong 15 phút.`;
+        const html = `Chào mừng bạn đến với HustCV, đây là mã code để khôi phục mật khẩu : ${verificationCode}. Mã này sẽ hết hạn trong 5 phút.`;
         const text = {
             email,
             html
