@@ -83,7 +83,7 @@ exports.getAcceptedApplications = async (req, res) => {
         // get all accepted applications
         const acceptedApplications = await db.application.findAll({
             where: {
-                status: "ACCEPTED",
+                status: "Đã chấp nhận",
                 recruitmentPost_id: postId,
             },
             include: {model: db.user, attributes: ["username", "email", "phoneNumber"]}
