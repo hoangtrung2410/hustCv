@@ -11,10 +11,10 @@ const signUp = async (req, res) => {
         const schema = Yup.object().shape({
             username: Yup.string().required(),
             email: Yup.string().email().required(),
-            // mật khẩu phải có ít nhất 8 ký tự, có chữ Hoa và chữ thường, số
-            password: Yup.string().required().min(8).matches(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-              "Mật khẩu phải có ít nhất 8 ký tự, có chữ Hoa và chữ thường, số"
+            // mật khẩu phải có ít nhất 8 ký tự, có chữ Hoa và chữ thường, số, có ký tự đặc biệt
+            password: Yup.string().required().matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+              "Mật khẩu phải có ít nhất 8 ký tự, có chữ Hoa và chữ thường, số , có ký tự đặc biệt"
             ),
             //phoneNumber phải có 10 số
             phoneNumber: Yup.string().required().matches(
