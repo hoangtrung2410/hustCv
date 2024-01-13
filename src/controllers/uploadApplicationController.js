@@ -48,7 +48,7 @@ const uploadApplication = async (req, res) => {
                  try{
                      const old_application = await application.findOne({where: {user_id: userId, recruitmentPost_id: postId}});
                      if (old_application) {
-                         await application.update({CV: key}, {where: {user_id: userId}});
+                         await application.update({CV: key, content: req.body.content}, {where: {user_id: userId}});
                  }
                      else {
                          await application.create(infor);
