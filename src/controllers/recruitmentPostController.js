@@ -1,5 +1,6 @@
 const db = require('../models')
 const { Op } = require("sequelize");
+const Sequelize = require('sequelize');
 
 // create main Model
 const RecruitmentPost = db.recruitmentPost
@@ -128,24 +129,24 @@ const deleteRecruitmentPost = async (req, res) => {
 //search
 const searchRecruitmentPost = async (req, res) => {
   console.log('henho')
-    const { value } = req.body;
-    try {
-      let recruitmentPosts = await RecruitmentPost.findAll({
-        where: {
-          [Op.or]: [
-            { title: { [Op.like]: `%${value}%` } },
-            { describe: { [Op.like]: `%${value}%` } },
-          ],
-        },
-        order: [["createdAt", "DESC"]],
-        include: [
-          {
-            model: Skill,
-            through: { attributes: [] },
-            attributes: ["id", "name"],
-            where: { name: { [Op.like]: `%${value}%` } },
-          },
+  const { value } = req.body;
+  try {
+    let recruitmentPosts = await RecruitmentPost.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: `%${value}%` } },
+          { describe: { [Op.like]: `%${value}%` } },
         ],
+      },
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: Skill,
+          through: { attributes: [] },
+          attributes: ["id", "name"],
+          where: { name: { [Op.like]: `%${value}%` } },
+        },
+      ],
       order: [["createdAt", "DESC"]],
       include: [
         {
@@ -163,35 +164,62 @@ const searchRecruitmentPost = async (req, res) => {
   }
 };
 
-  const getAllPost = async (req, res) => {
-    try {
-        let recruitmentPosts = await RecruitmentPost.findAll({
-            order: [['createdAt', 'DESC']],
-            include: [{
-                model: Skill,
-                through: { attributes: [] },
-                attributes: ['id', 'name'],
-            }, {
-                model: User,
-                attributes: ['username'],
-            }],
-        })
-        // const count = await RecruitmentPost.count()
-        res.status(200).json(recruitmentPosts)
-    }
-    catch (error) {
-        console.log(error)
-        res.status(500).json({ error: "Internal Server Error" })
-    }
+const getAllPost = async (req, res) => {
+  try {
+    let recruitmentPosts = await RecruitmentPost.findAll({
+      order: [['createdAt', 'DESC']],
+      include: [{
+        model: Skill,
+        through: { attributes: [] },
+        attributes: ['id', 'name'],
+      }, {
+        model: User,
+        attributes: ['username'],
+      }],
+    })
+    // const count = await RecruitmentPost.count()
+    res.status(200).json(recruitmentPosts)
   }
+  catch (error) {
+    console.log(error)
+    res.status(500).json({ error: "Internal Server Error" })
+  }
+}
+
+const getAllPostNotExpired = async (req, res, next) => {
+  try {
+    const count = await RecruitmentPost.count({
+      where: {
+        dateClose: {
+          [Op.gt]: new Date(new Date() - 24 * 60 * 60 * 1000)
+        }
+      }
+    })
+    const notExpired = await RecruitmentPost.findAll({
+      where: {
+        dateClose: {
+          [Op.gt]: new Date(new Date() - 24 * 60 * 60 * 1000)
+        }
+      }
+    })
+    res.status(200).json({
+      count: count,
+      posts: notExpired
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json('error')
+  }
+}
 
 module.exports = {
-    addRecruitmentPost,
-    updateRecruitmentPost,
-    getAllRecruitmentPost,
-    getOneRecruitmentPost,
-    deleteRecruitmentPost,
-    searchRecruitmentPost,
-    getAllPost
+  addRecruitmentPost,
+  updateRecruitmentPost,
+  getAllRecruitmentPost,
+  getOneRecruitmentPost,
+  deleteRecruitmentPost,
+  searchRecruitmentPost,
+  getAllPost,
+  getAllPostNotExpired
 }
 

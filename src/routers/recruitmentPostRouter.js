@@ -14,6 +14,8 @@ router.post('/search', recruitmentPostController.searchRecruitmentPost)
 router.get('/getAll', recruitmentPostController.getAllPost)
 router.get('/khanh/:id', recruitmentPostController.getOneRecruitmentPost)
 
+router.get('/posts-not-expired', recruitmentPostController.getAllPostNotExpired)
+
 router.get('/', authMiddleware.authMiddleware, recruitmentPostController.getAllRecruitmentPost)
 router.get('/:id', authMiddleware.authMiddleware, recruitmentPostController.getOneRecruitmentPost)
 router.post('/', authMiddleware.authMiddleware, recruitmentPostController.addRecruitmentPost)
