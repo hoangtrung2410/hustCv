@@ -193,14 +193,32 @@ const getAllPostNotExpired = async (req, res, next) => {
         dateClose: {
           [Op.gt]: new Date(new Date() - 24 * 60 * 60 * 1000)
         }
-      }
+      },
+      order: [['createdAt', 'DESC']],
+      include: [{
+        model: Skill,
+        through: { attributes: [] },
+        attributes: ['id', 'name'],
+      }, {
+        model: User,
+        attributes: ['username'],
+      }],
     })
     const notExpired = await RecruitmentPost.findAll({
       where: {
         dateClose: {
           [Op.gt]: new Date(new Date() - 24 * 60 * 60 * 1000)
         }
-      }
+      },
+      order: [['createdAt', 'DESC']],
+      include: [{
+        model: Skill,
+        through: { attributes: [] },
+        attributes: ['id', 'name'],
+      }, {
+        model: User,
+        attributes: ['username'],
+      }],
     })
     res.status(200).json({
       count: count,
