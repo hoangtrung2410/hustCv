@@ -79,13 +79,13 @@ app.use('/api/recruiterApplication', recruiterApplicationRouter);
 
 app.use('/api/application', uploadApplicationRouter);
 
-// const upload = multer({ dest: "uploads/" }); // Thư mục lưu trữ tạm thời cho tệp tin
-// app.post("/api/create-pdf", upload.single("file"), async (req, res) => {
+// const upload = multer({ dest: "uploads/" });// Thư mục lưu trữ tạm thời cho tệp tin
+// app.post("/api/application/create-pdf", upload.single("file"), async (req, res) => {
 //   const getTitleFromPDF = async (buffer) => {
 //     const timestamp = Date.now();
 //     try {
 //       const data = await PDFParser(buffer);
-//       const title = data.info.Title || `default-filename-${timestamp}.pdf`; // Lấy tiêu đề từ thông tin metadata hoặc sử dụng tên mặc định
+//       const title = data.info.Title || `default-filename-${timestamp}.pdf`; //Lấy tiêu đề từ thông tin metadata hoặc sử dụng tên mặc định
 
 //       return title;
 //     } catch (error) {
