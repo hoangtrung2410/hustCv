@@ -16,6 +16,8 @@ router.put('/updateUser/:id',adminsController.verifyToken,adminsController.updat
 
 router.get('/allUser',adminsController.verifyToken,adminsController.getAllUsers)
 
+router.get('/getUsers/:id',adminsController.verifyToken,adminsController.getUsers)
+
 router.post('/allUserByUsername',adminsController.verifyToken,adminsController.getUserByUsername)
 
 router.post('/allUserByEmail',adminsController.verifyToken,adminsController.getUserByEmail)

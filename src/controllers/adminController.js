@@ -138,22 +138,34 @@ const updatePassword = async(req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-const getRanDomUsers = async (req, res) => {
+
+const getUsers = async (req, res) => {
+  const { id } = req.params;
   try {
-    // lấy random 20 user và tông cac user
-    const users = await User.findAll(
-      {
-        order: db.Sequelize.literal('rand()'),
-        limit: 20
-      }
-    );
-    let sum = await User.count();
-    res.status(200).json({users,sum});
+    let offset = 0;
+    const limit = 15; // Số lượng bản ghi trên mỗi trang
+
+    if (id && !isNaN(parseInt(id))) {
+      // Tính toán vị trí bắt đầu dựa trên id
+      offset = (parseInt(id) - 1) * limit;
+    }
+
+    const users = await User.findAll({
+      order: [['id', 'ASC']], // Sắp xếp theo id tăng dần
+      limit: limit,
+      offset: offset
+    });
+
+    const totalUsers = await User.count();
+    const totalPages = Math.ceil(totalUsers / limit); // Tính toán tổng số trang
+
+    res.status(200).json({ users, totalUsers, totalPages });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const getAllUsers = async (req, res) => {
   try {
@@ -174,7 +186,7 @@ const getUserByUsername = async (req, res) => {
     const user = await User.findAll({ where: { username } });
 
     if (user.length) {
-      res.status(200).json(user);
+      res.status(200).json({user,count: user.length});
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -192,7 +204,7 @@ const getUserByEmail = async (req, res) => {
     const user = await User.findAll({ where: { email } });
 
     if (user.length) {
-      res.status(200).json(user);
+      res.status(200).json({user,count: user.length});
     } else {
       res.status  (404).json({ message: 'User not found' });
     }
@@ -209,7 +221,7 @@ const getUserByPhoneNumber = async (req, res) => {
     const user = await User.findAll({ where: { phoneNumber } });
 
     if (user.length) {
-      res.status(200).json(user);
+      res.status(200).json({user,count: user.length});
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -226,7 +238,7 @@ const getUserByEmailAndPhoneNumber = async (req, res) => {
     const user = await User.findAll({ where: { email, phoneNumber } });
 
     if (user.length) {
-      res.status(200).json(user);
+      res.status(200).json({user,count: user.length});
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -243,7 +255,7 @@ const getUserByUsernameAndPhoneNumber = async (req, res) => {
     const user = await User.findAll({ where: { username, phoneNumber } });
 
     if (user.length) {
-      res.status(200).json(user);
+      res.status(200).json({user,count: user.length});
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -260,7 +272,7 @@ const getUserByEmailAndUsername = async (req, res) => {
     const user = await User.findAll({ where: { email, username } });
 
     if (user.length) {
-      res.status(200).json(user);
+      res.status(200).json({user,count: user.length});
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -277,7 +289,7 @@ const getUserByEmailUsernameAndPhoneNumber = async (req, res) => {
     const user = await User.findAll({ where: { email, username, phoneNumber } });
 
     if (user.length) {
-      res.status(200).json(user);
+      res.status(200).json({user,count: user.length});
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -306,7 +318,7 @@ module.exports={
   checkToken,
   updatePassword,
   verifyToken,
-  getRanDomUsers,
+  getUsers,
   getUserByUsername,
   getUserByEmail,
   getUserByPhoneNumber,
