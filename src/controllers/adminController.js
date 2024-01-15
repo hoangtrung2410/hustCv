@@ -3,6 +3,8 @@ const db = require('../models')
 const jwt = require('jsonwebtoken');
 const Admins = db.admin
 const User = db.user;
+const Op = db.Sequelize.Op;
+const Business = db.business;
 const registerAdmins = async(req,res) =>{
   try{
     if(!req.body){
@@ -153,7 +155,13 @@ const getUsers = async (req, res) => {
     const users = await User.findAll({
       order: [['id', 'ASC']], // Sắp xếp theo id tăng dần
       limit: limit,
-      offset: offset
+      offset: offset,
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ],
     });
 
     const totalUsers = await User.count();
