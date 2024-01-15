@@ -188,42 +188,104 @@ const getAllPost = async (req, res) => {
 
 const getAllPostNotExpired = async (req, res, next) => {
   try {
-    const count = await RecruitmentPost.count({
-      where: {
+    const filterUndefined = (obj) => {
+      const result = {};
+      for (const key in obj) {
+        if (obj[key] !== undefined) {
+          result[key] = obj[key];
+        }
+      }
+      return result;
+    };
+
+    console.log('check:', req.query.params)
+
+    if (req.query?.params?.skill) {
+      const { skill, ...rest } = req.query.params
+
+      const conditions = {
         dateClose: {
           [Op.gt]: new Date(new Date() - 24 * 60 * 60 * 1000)
-        }
-      },
-      order: [['createdAt', 'DESC']],
-      include: [{
-        model: Skill,
-        through: { attributes: [] },
-        attributes: ['id', 'name'],
-      }, {
-        model: User,
-        attributes: ['username'],
-      }],
-    })
-    const notExpired = await RecruitmentPost.findAll({
-      where: {
+        },
+        ...filterUndefined(rest)
+      };
+
+
+      const count = await RecruitmentPost.count({
+        where: conditions,
+        order: [['createdAt', 'DESC']],
+        include: [{
+          model: Skill,
+          through: { attributes: [] },
+          attributes: ['id', 'name'],
+          where: {
+            id: skill,
+          },
+        }, {
+          model: User,
+          attributes: ['username'],
+        }],
+      })
+      const notExpired = await RecruitmentPost.findAll({
+        where: conditions,
+        order: [['createdAt', 'DESC']],
+        include: [{
+          model: Skill,
+          through: { attributes: [] },
+          attributes: ['id', 'name'],
+          where: {
+            id: skill,
+          },
+        }, {
+          model: User,
+          attributes: ['username'],
+        }],
+      })
+      res.status(200).json({
+        count: count,
+        posts: notExpired
+      })
+
+    } else {
+      const conditions = {
         dateClose: {
           [Op.gt]: new Date(new Date() - 24 * 60 * 60 * 1000)
-        }
-      },
-      order: [['createdAt', 'DESC']],
-      include: [{
-        model: Skill,
-        through: { attributes: [] },
-        attributes: ['id', 'name'],
-      }, {
-        model: User,
-        attributes: ['username'],
-      }],
-    })
-    res.status(200).json({
-      count: count,
-      posts: notExpired
-    })
+        },
+        ...filterUndefined(req.query?.params)
+      };
+
+
+      const count = await RecruitmentPost.count({
+        where: conditions,
+        order: [['createdAt', 'DESC']],
+        include: [{
+          model: Skill,
+          through: { attributes: [] },
+          attributes: ['id', 'name'],
+        }, {
+          model: User,
+          attributes: ['username'],
+        }],
+      })
+      const notExpired = await RecruitmentPost.findAll({
+        where: conditions,
+        order: [['createdAt', 'DESC']],
+        include: [{
+          model: Skill,
+          through: { attributes: [] },
+          attributes: ['id', 'name'],
+        }, {
+          model: User,
+          attributes: ['username'],
+        }],
+      })
+      res.status(200).json({
+        count: count,
+        posts: notExpired
+      })
+    }
+
+
   } catch (error) {
     console.log(error)
     res.status(500).json('error')
