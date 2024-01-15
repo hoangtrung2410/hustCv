@@ -1,5 +1,5 @@
 
-const db = require('../models')
+const db = require('../models');
 const jwt = require('jsonwebtoken');
 const Admins = db.admin
 const User = db.user;
@@ -191,7 +191,15 @@ const getUserByUsername = async (req, res) => {
   const { username } = req.body;
 
   try {
-    const user = await User.findAll({ where: { username } });
+    const user = await User.findAll({ 
+      where: { username } ,
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ],
+    });
 
     if (user.length) {
       res.status(200).json({user,count: user.length});
@@ -209,7 +217,15 @@ const getUserByEmail = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findAll({ where: { email } });
+    const user = await User.findAll({ 
+      where: { email },
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ], 
+    });
 
     if (user.length) {
       res.status(200).json({user,count: user.length});
@@ -226,7 +242,15 @@ const getUserByPhoneNumber = async (req, res) => {
   const { phoneNumber } = req.body;
 
   try {
-    const user = await User.findAll({ where: { phoneNumber } });
+    const user = await User.findAll({ 
+      where: { phoneNumber },
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ], 
+    });
 
     if (user.length) {
       res.status(200).json({user,count: user.length});
@@ -243,7 +267,15 @@ const getUserByEmailAndPhoneNumber = async (req, res) => {
   const { email, phoneNumber } = req.body;
 
   try {
-    const user = await User.findAll({ where: { email, phoneNumber } });
+    const user = await User.findAll({ 
+      where: { email, phoneNumber },
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ], 
+    });
 
     if (user.length) {
       res.status(200).json({user,count: user.length});
@@ -260,7 +292,15 @@ const getUserByUsernameAndPhoneNumber = async (req, res) => {
   const { username, phoneNumber } = req.body;
 
   try {
-    const user = await User.findAll({ where: { username, phoneNumber } });
+    const user = await User.findAll({ 
+      where: { username, phoneNumber },
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ], 
+    });
 
     if (user.length) {
       res.status(200).json({user,count: user.length});
@@ -277,7 +317,15 @@ const getUserByEmailAndUsername = async (req, res) => {
   const { email, username } = req.body;
 
   try {
-    const user = await User.findAll({ where: { email, username } });
+    const user = await User.findAll({ 
+      where: { email, username },
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ], 
+    });
 
     if (user.length) {
       res.status(200).json({user,count: user.length});
@@ -294,7 +342,15 @@ const getUserByEmailUsernameAndPhoneNumber = async (req, res) => {
   const { email, username, phoneNumber } = req.body;
 
   try {
-    const user = await User.findAll({ where: { email, username, phoneNumber } });
+    const user = await User.findAll({ 
+      where: { email, username, phoneNumber },
+      include: [
+        {
+          model: Business,
+          attributes: ['id', 'businessName', 'businessAddress','businessWebsite' ],
+        },
+      ], 
+    });
 
     if (user.length) {
       res.status(200).json({user,count: user.length});
