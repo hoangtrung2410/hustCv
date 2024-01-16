@@ -24,19 +24,18 @@ const login = async (req, res) => {
         const user = await User.findOne({
             where: {
                 email: email,
-
             },
         });
-        if(user.status === false){
-            return res.status(403).json({
-                statusCode: 403,
-                message: "Tài khoản đã bị khóa",
-            });
-        }
         if (!user) {
             return res.status(400).json({
                 statusCode: 400,
                 message: "Tài khoản không tồn tại",
+            });
+        }
+        if(user.status === false){
+            return res.status(403).json({
+                statusCode: 403,
+                message: "Tài khoản đã bị khóa",
             });
         }
         const isPasswordValid = await user.checkPassword(password);
@@ -139,12 +138,6 @@ const forgotPassword = async (req, res) => {
                 ],
             },
         });
-        if(user.status === false){
-            return res.status(403).json({
-                statusCode: 403,
-                message: "Tài khoản đã bị khóa",
-            });
-        }
         if (!user) {
             return res.status(401).json({
                 statusCode: 401,
@@ -152,6 +145,13 @@ const forgotPassword = async (req, res) => {
                 error: 'Email không tồn tại'
             });
         }
+        if(user.status === false){
+            return res.status(403).json({
+                statusCode: 403,
+                message: "Tài khoản đã bị khóa",
+            });
+        }
+
         const verificationCode = await user.createPasswordChangedToken()
         await user.save();
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
