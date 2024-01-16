@@ -138,12 +138,6 @@ const forgotPassword = async (req, res) => {
                 ],
             },
         });
-        if(user.status === false){
-            return res.status(403).json({
-                statusCode: 403,
-                message: "Tài khoản đã bị khóa",
-            });
-        }
         if (!user) {
             return res.status(401).json({
                 statusCode: 401,
@@ -151,6 +145,13 @@ const forgotPassword = async (req, res) => {
                 error: 'Email không tồn tại'
             });
         }
+        if(user.status === false){
+            return res.status(403).json({
+                statusCode: 403,
+                message: "Tài khoản đã bị khóa",
+            });
+        }
+
         const verificationCode = await user.createPasswordChangedToken()
         await user.save();
         const passwordCode = crypto.createHash('sha256').update(verificationCode.toString()).digest('hex');
