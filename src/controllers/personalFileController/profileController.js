@@ -245,11 +245,12 @@ const deleteCertificate = async (req, res) => {
 const deleteExperience = async (req, res) => {
     try {
         const id = req.params.id;
+        console.log(id);
         const experienceInfor = await experience.findOne({where: {id: id}})
         if (!experienceInfor){
             return res.status(404).json({error: "not found"})
         }
-        await experience.destroy(req.body, {where:{id:id}});
+        await experience.destroy({where:{id:id}});
         return res.status(200).json("delete successfull")
     }
     catch(error) {
