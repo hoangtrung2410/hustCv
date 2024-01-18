@@ -72,7 +72,7 @@ const useAvailableCv = async (req, res) => {
         const user_id = req.userId;
         const postId = req.body.recruitmentPost_id;
         const userFile = await personalFile.findOne({where: {id: user_id}});
-        const old_application = application.findOne({where: {user_id: user_id, recruitmentPost_id: postId}});
+        const old_application = await application.findOne({where: {user_id: user_id, recruitmentPost_id: postId}});
         const available_cv = userFile.cv;
         if (available_cv != '') {
             if (old_application){
@@ -103,6 +103,7 @@ const useAvailableCv = async (req, res) => {
         }
     }
     catch (err) {
+        console.log(err);
         return res.status(500).json('loi server');
     }
 }

@@ -156,6 +156,7 @@ const searchRecruitmentPost = async (req, res) => {
         },
       ],
     });
+    console.log(recruitmentPosts);
     res.status(200).json(recruitmentPosts);
   } catch (error) {
     console.log(error);
