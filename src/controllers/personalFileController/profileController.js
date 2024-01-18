@@ -13,6 +13,13 @@ const addEducation = async (req, res) => {
         if (!req.body.name) {
             return res.status(400).json({ error: "Bad request: Missing request body" });
         }
+        const start = req.body.name.split('*/')[2];
+        const end = req.body.name.split('*/')[3];
+        if (end !== 'Hiện tại') {
+            if (end < start) {
+                return res.status(400).json('Bạn cần nhập đúng khoảng thời gian!')
+            }
+        }
         const info = {
             name: req.body.name,
             personalFileId: req.userId
@@ -30,6 +37,13 @@ const addProject = async (req, res) => {
     try {
         if (!req.body.name) {
             return res.status(400).json({ error: "Bad request: Missing request body" });
+        }
+        const start = req.body.name.split('*/')[1];
+        const end = req.body.name.split('*/')[2];
+        if (end !== 'Hiện tại') {
+            if (end < start) {
+                return res.status(400).json('Bạn cần nhập đúng khoảng thời gian!')
+            }
         }
         const info = {
             name: req.body.name,
@@ -66,6 +80,13 @@ const addExperience = async (req, res) => {
     try {
         if (!req.body.name) {
             return res.status(400).json({error: "Bad request"});
+        }
+        const start = req.body.name.split('*/')[2];
+        const end = req.body.name.split('*/')[3];
+        if (end !== 'Hiện tại') {
+            if (end < start) {
+                return res.status(400).json('Bạn cần nhập đúng khoảng thời gian!')
+            }
         }
         const info = {
             name: req.body.name,
@@ -109,6 +130,13 @@ const updateEducation = async (req, res) => {
         if (!educationInfo){
             return res.status(404).json({ error: "not found eduId"})
         }
+        const start = req.body.name.split('*/')[2];
+        const end = req.body.name.split('*/')[3];
+        if (end !== 'Hiện tại') {
+            if (end < start) {
+                return res.status(400).json('Bạn cần nhập đúng khoảng thời gian!')
+            }
+        }
         await study.update(req.body, {where:{id:id}});
         return res.status(201).json('update complete');
     } catch(error){
@@ -123,6 +151,13 @@ const updateProject = async (req, res) => {
         const projectInfo = await project.findOne({where: {id: id}})
         if (!projectInfo){
             return res.status(404).json({error: "not found"})
+        }
+        const start = req.body.name.split('*/')[1];
+        const end = req.body.name.split('*/')[2];
+        if (end !== 'Hiện tại') {
+            if (end < start) {
+                return res.status(400).json('Bạn cần nhập đúng khoảng thời gian!')
+            }
         }
         await project.update(req.body, {where:{id:id}});
         return res.status(201).json('update complete')
@@ -153,6 +188,13 @@ const updateExperience = async (req, res) => {
         const experienceInfor = await experience.findOne({where: {id: id}})
         if (!experienceInfor){
             return res.status(404).json({error: "not found"})
+        }
+        const start = req.body.name.split('*/')[2];
+        const end = req.body.name.split('*/')[3];
+        if (end !== 'Hiện tại') {
+            if (end < start) {
+                return res.status(400).json('Bạn cần nhập đúng khoảng thời gian!')
+            }
         }
         await experience.update(req.body, {where:{id:id}});
         return res.status(201).json('update complete')
