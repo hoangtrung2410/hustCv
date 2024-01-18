@@ -12,7 +12,6 @@ const addRecruitmentPost = async (req, res) => {
     if (!req.body) {
       return res.status(400).json({ error: "Bad request: Missing request body" });
     }
-    console.log('>>> check req.body: ', req.userId)
     const user = await User.findOne({ where: { id: req.userId } })
     const info = {
       title: req.body.title,
@@ -188,6 +187,14 @@ const getAllPost = async (req, res) => {
 
 const getAllPostNotExpired = async (req, res, next) => {
   try {
+
+    const pageSize = 6
+    const page = req.query?.params?._page ? req.query?.params?._page : 1
+
+    if (req.query?.params?._page) {
+      delete req.query?.params?._page
+    }
+
     const filterUndefined = (obj) => {
       const result = {};
       for (const key in obj) {
@@ -198,7 +205,6 @@ const getAllPostNotExpired = async (req, res, next) => {
       return result;
     };
 
-    console.log('check:', req.query.params)
 
     if (req.query?.params?.skill) {
       const { skill, ...rest } = req.query.params
@@ -210,8 +216,7 @@ const getAllPostNotExpired = async (req, res, next) => {
         ...filterUndefined(rest)
       };
 
-
-      const count = await RecruitmentPost.count({
+      const { count, rows } = await RecruitmentPost.findAndCountAll({
         where: conditions,
         order: [['createdAt', 'DESC']],
         include: [{
@@ -225,25 +230,12 @@ const getAllPostNotExpired = async (req, res, next) => {
           model: User,
           attributes: ['username'],
         }],
-      })
-      const notExpired = await RecruitmentPost.findAll({
-        where: conditions,
-        order: [['createdAt', 'DESC']],
-        include: [{
-          model: Skill,
-          through: { attributes: [] },
-          attributes: ['id', 'name'],
-          where: {
-            id: skill,
-          },
-        }, {
-          model: User,
-          attributes: ['username'],
-        }],
+        limit: pageSize,
+        offset: pageSize * (page - 1)
       })
       res.status(200).json({
         count: count,
-        posts: notExpired
+        posts: rows
       })
 
     } else {
@@ -254,34 +246,43 @@ const getAllPostNotExpired = async (req, res, next) => {
         ...filterUndefined(req.query?.params)
       };
 
-
       const count = await RecruitmentPost.count({
         where: conditions,
         order: [['createdAt', 'DESC']],
-        include: [{
-          model: Skill,
-          through: { attributes: [] },
-          attributes: ['id', 'name'],
-        }, {
-          model: User,
-          attributes: ['username'],
-        }],
+        include: [
+          // {
+          //   model: Skill,
+          //   through: { attributes: [] },
+          //   attributes: ['id', 'name'],
+          // }, 
+          {
+            model: User,
+            attributes: ['username'],
+          }],
+        limit: pageSize,
+        offset: pageSize * (page - 1)
       })
-      const notExpired = await RecruitmentPost.findAll({
+
+      const rows = await RecruitmentPost.findAll({
         where: conditions,
         order: [['createdAt', 'DESC']],
-        include: [{
-          model: Skill,
-          through: { attributes: [] },
-          attributes: ['id', 'name'],
-        }, {
-          model: User,
-          attributes: ['username'],
-        }],
+        include: [
+          {
+            model: Skill,
+            through: { attributes: [] },
+            attributes: ['id', 'name'],
+          },
+          {
+            model: User,
+            attributes: ['username'],
+          }],
+        limit: pageSize,
+        offset: pageSize * (page - 1)
       })
+
       res.status(200).json({
         count: count,
-        posts: notExpired
+        posts: rows
       })
     }
 
