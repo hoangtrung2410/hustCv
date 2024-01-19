@@ -16,10 +16,10 @@ router.get('/khanh/:id', recruitmentPostController.getOneRecruitmentPost)
 
 router.get('/posts-not-expired', recruitmentPostController.getAllPostNotExpired)
 
-router.get('/', authMiddleware.authMiddleware, recruitmentPostController.getAllRecruitmentPost)
-router.get('/:id', authMiddleware.authMiddleware, recruitmentPostController.getOneRecruitmentPost)
-router.post('/', authMiddleware.authMiddleware, recruitmentPostController.addRecruitmentPost)
-router.put('/:id', authMiddleware.authMiddleware, recruitmentPostController.updateRecruitmentPost)
-router.delete('/:id', authMiddleware.authMiddleware, recruitmentPostController.deleteRecruitmentPost)
+router.get('/', authMiddleware.isEmployer, recruitmentPostController.getAllRecruitmentPost)
+router.get('/:id', authMiddleware.isEmployer, recruitmentPostController.getOneRecruitmentPost)
+router.post('/', authMiddleware.isEmployer, recruitmentPostController.addRecruitmentPost)
+router.put('/:id', authMiddleware.isEmployer, recruitmentPostController.updateRecruitmentPost)
+router.delete('/:id', authMiddleware.isEmployer, recruitmentPostController.deleteRecruitmentPost)
 
 module.exports = router

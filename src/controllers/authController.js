@@ -45,7 +45,7 @@ const login = async (req, res) => {
                 message: " 'Email hoặc mật khẩu không đúng'",
             });
         }
-        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-20s"});
+        const accessToken = JwtService.jwtSign({userId: user.id, roleId: user.role_id}, {expiresIn: "-10s"});
         const millisecondsInOneDay = 24 * 60 * 60 * 1000;
         const checkDate = Date.now() - user.timeCreateRefreshToken;
         let refreshToken = user.refreshToken;
@@ -85,6 +85,7 @@ const refreshToken = async (req, res) => {
                 message: "Unauthorized",
                 error: 'Invalid password.'
             });
+        console.log("Hahaha1111")
         const rs = await JwtService.jwtVerify(refreshToken)
         const response = await User.findOne({id: rs._id, refreshToken: refreshToken})
         return res.status(200).json({
